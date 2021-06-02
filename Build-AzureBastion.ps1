@@ -34,19 +34,19 @@ Disclaimer:     This script is provided "As IS" with no warranties.
 
 ## Variables
 
-$rgBastion = # <your Bastion rg here> The Azure resource group in which the new Bastion resource will be created. Example: "rg-myh-hub-bastion"
+$rgBastion = # <your Bastion rg here> The new Azure resource group in which the new Bastion resource will be created. Example: "rg-myh-hub-bastion"
 $bastionName = # <your name here> The name of the new Bastion resource. Example: "bas-myh-hub"
 $location = # <your region here> The used Azure public region. Example: "westeurope"
-$rgNetworkSpoke = # <your VNet rg here> The Azure resource group in which your VNet is deployed. Example: "rg-myh-hub-network"
-$vnetName = # <your VNet rg here> The VNet in which the Bastion resource will be created. Example: "vnet-myh-hub-weu"
+$rgNetworkSpoke = # <your VNet rg here> The Azure resource group in which your existing VNet is deployed. Example: "rg-myh-hub-network"
+$vnetName = # <your VNet rg here> The existing VNet in which the Bastion resource will be created. Example: "vnet-myh-hub-weu"
 $subnetNameBastion = "AzureBastionSubnet"
 $subnetBastionAddress = # <your AzureBastionSubnet range here> The subnet must be at least /27 or larger. Example: "10.1.1.96/27"
 $nsgNameBastion = # <your AzureBastionSubnet NSG name here> The name of the NSG associated with the AzureBastionSubnet. Example: "nsg-myh-hub-bas"
 $bastionPipName = # <your Bastion PIP here> The public IP address of the Bastion resource. Example: "pip-myh-hub-bas"
 $bastionPipAllocationMethod = "Static"
 $bastionPipSku = "Standard"
-$rgLogAnalyticsSpoke = # <your Log Analytics rg here> The Azure resource group your Log Analytics workspace is deplyed. Example: "rg-myh-hub-management"
-$logAnalyticsName = # <your Log Analytics workspace name here> The name of your Log Analytics workspace. Example: "law-myh-hub-01"
+$rgLogAnalyticsSpoke = # <your Log Analytics rg here> The Azure resource group your existing Log Analytics workspace is deployed. Example: "rg-myh-hub-management"
+$logAnalyticsName = # <your Log Analytics workspace name here> The name of your existing Log Analytics workspace. Example: "law-myh-hub-01"
 $bastionDiagnosticsName = # <your Bastion Diagnostics settings name here> The name of the new diagnostic settings for Bastion. Example: "diag-myh-hub-bas"
 
 $tagSpoke ="hub"
