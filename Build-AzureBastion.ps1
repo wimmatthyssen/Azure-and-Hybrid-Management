@@ -198,7 +198,7 @@ Write-Host ($writeEmptyLine + "# Pip " + $bastionPipName + " available" + $write
 
 ## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Create the Bastion host (it takses around 5 minutes for the Bastion host to be deployed) if it not exists
+## Create the Bastion host (it takes around 8 minutes for the Bastion host to be deployed) if it not exists
 
 try {
     $bastion = Get-AzBastion -Name $bastionName -ResourceGroupName $rgBastion -ErrorAction Stop
