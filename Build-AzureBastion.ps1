@@ -15,7 +15,7 @@ don't exist. And at the end it will lock the Azure Bastion resource group�
 
 Filename:       Build-AzureBastion.ps1
 Created:        01/06/2021
-Last modified:  01/06/2021
+Last modified:  02/07/2021
 Author:         Wim Matthyssen
 PowerShell:     Azure Cloud Shell or Azure PowerShell
 Version:        Install latest Azure Powershell modules (at least Az version 5.9.0 and Az.Network version 4.7.0 is required)
@@ -35,20 +35,20 @@ https://wmatthyssen.com/2021/06/02/azure-bastion-azure-powershell-deployment-scr
 
 ## Variables
 
-$rgBastion = # <your Bastion rg here> The new Azure resource group in which the new Bastion resource will be created. Example: "rg-myh-hub-bastion"
-$bastionName = # <your name here> The name of the new Bastion resource. Example: "bas-myh-hub"
-$location = # <your region here> The used Azure public region. Example: "westeurope"
-$rgNetworkSpoke = # <your VNet rg here> The Azure resource group in which your existing VNet is deployed. Example: "rg-myh-hub-network"
-$vnetName = # <your VNet name here> The existing VNet in which the Bastion resource will be created. Example: "vnet-myh-hub-weu"
+$rgBastion = #<your Bastion rg here> The new Azure resource group in which the new Bastion resource will be created. Example: "rg-hub-myh-bastion"
+$bastionName = #<your name here> The name of the new Bastion resource. Example: "bas-hub-myh"
+$location = #<your region here> The used Azure public region. Example: "westeurope"
+$rgNetworkSpoke = #<your VNet rg here> The Azure resource group in which your existing VNet is deployed. Example: "rg-hub-myh-network"
+$vnetName = #<your VNet rg here> The existing VNet in which the Bastion resource will be created. Example: "vnet-hub-myh-weu"
 $subnetNameBastion = "AzureBastionSubnet"
-$subnetBastionAddress = # <your AzureBastionSubnet range here> The subnet must be at least /27 or larger. Example: "10.1.1.96/27"
-$nsgNameBastion = # <your AzureBastionSubnet NSG name here> The name of the NSG associated with the AzureBastionSubnet. Example: "nsg-myh-hub-bas"
-$bastionPipName = # <your Bastion PIP here> The public IP address of the Bastion resource. Example: "pip-myh-hub-bas"
+$subnetBastionAddress = #<your AzureBastionSubnet range here> The subnet must be at least /27 or larger. Example: "10.1.1.96/27"
+$nsgNameBastion = #<your AzureBastionSubnet NSG name here> The name of the NSG associated with the AzureBastionSubnet. Example: "nsg-AzureBastionSubnet"
+$bastionPipName = #<your Bastion PIP here> The public IP address of the Bastion resource. Example: "pip-bas-hub-myh"
 $bastionPipAllocationMethod = "Static"
 $bastionPipSku = "Standard"
-$rgLogAnalyticsSpoke = # <your Log Analytics rg here> The Azure resource group your existing Log Analytics workspace is deployed. Example: "rg-myh-hub-management"
-$logAnalyticsName = # <your Log Analytics workspace name here> The name of your existing Log Analytics workspace. Example: "law-myh-hub-01"
-$bastionDiagnosticsName = # <your Bastion Diagnostics settings name here> The name of the new diagnostic settings for Bastion. Example: "diag-myh-hub-bas"
+$rgLogAnalyticsSpoke = #<your Log Analytics rg here> The Azure resource group your existing Log Analytics workspace is deployed. Example: "rg-hub-myh-management"
+$logAnalyticsName = #<your Log Analytics workspace name here> The name of your existing Log Analytics workspace. Example: "law-hub-myh-01"
+$bastionDiagnosticsName = "#<your Bastion Diagnostics settings name here> The name of the new diagnostic settings for Bastion. Example: "diag-bas-hub-myh"
 
 $tagSpoke ="hub"
 $tagCostCenter = "it"
@@ -59,7 +59,6 @@ $global:currenttime= Set-PSBreakpoint -Variable currenttime -Mode Read -Action {
 $foregroundColor1 = "Red"
 $foregroundColor2 = "Yellow"
 $writeEmptyLine = "`n"
-$writeSeperator = "-"
 $writeSeperatorSpaces = " - "
 
 ## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -198,7 +197,7 @@ Write-Host ($writeEmptyLine + "# Pip " + $bastionPipName + " available" + $write
 
 ## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Create the Bastion host (it takes around 8 minutes for the Bastion host to be deployed) if it not exists
+## Create the Bastion host (it takses around 5 minutes for the Bastion host to be deployed) if it not exists
 
 try {
     $bastion = Get-AzBastion -Name $bastionName -ResourceGroupName $rgBastion -ErrorAction Stop
@@ -252,4 +251,3 @@ Write-Host ($writeEmptyLine + "# Deployment completed" + $writeSeperatorSpaces +
 -foregroundcolor $foregroundColor1 $writeEmptyLine
 
 ## --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
