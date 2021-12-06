@@ -49,7 +49,7 @@ $bastionPipAllocationMethod = "Static"
 $bastionPipSku = "Standard"
 $rgLogAnalyticsSpoke = #<your Log Analytics rg here> The Azure resource group your existing Log Analytics workspace is deployed. Example: "rg-hub-myh-management"
 $logAnalyticsName = #<your Log Analytics workspace name here> The name of your existing Log Analytics workspace. Example: "law-hub-myh-01"
-$bastionDiagnosticsName = "#<your Bastion Diagnostics settings name here> The name of the new diagnostic settings for Bastion. Example: "diag-bas-hub-myh"
+$bastionDiagnosticsName = #<your Bastion Diagnostics settings name here> The name of the new diagnostic settings for Bastion. Example: "diag-bas-hub-myh"
 
 $tagSpoke ="hub"
 $tagCostCenter = "it"
