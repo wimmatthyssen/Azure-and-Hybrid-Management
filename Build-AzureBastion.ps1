@@ -8,7 +8,7 @@ A script used to setup and configure Azure Bastion within the HUB spoke VNet.
 A script used to setup and configure Azure Bastion (basic SKU) within the HUB spoke VNet. The script will create a resource group for the Azure Bastion resources (if it not already exists).
 Then it will create the AzureBastionSubnet (/26) with an associated network security group (NSG), which holds all the required inbound and outbound security rules (if it not already exists). 
 If the AzureBastionSubnet exists but does not have an associated NSG, it will attach the new created NSG. The script will also create a Public IP Address (PIP) for the Bastion host (if it not exists).
-and create the Bastion host, which can take up to 5 minutes (if it not exists). It will also set the log and metrics settings for the bastion resource if they 
+and create the Bastion host (basic SKU), which can take up to 5 minutes (if it not exists). It will also set the log and metrics settings for the bastion resource if they 
 don't exist. And at the end it will lock the Azure Bastion resource group with a CanNotDelete lock.
 
 .NOTES
@@ -37,7 +37,6 @@ https://wmatthyssen.com/2021/06/02/azure-bastion-azure-powershell-deployment-scr
 
 $rgBastion = #<your Bastion rg here> The new Azure resource group in which the new Bastion resource will be created. Example: "rg-hub-myh-bastion"
 $bastionName = #<your name here> The name of the new Bastion resource. Example: "bas-hub-myh"
-$bastionSku = "Basic" #"Standard"
 $location = #<your region here> The used Azure public region. Example: "westeurope"
 $rgNetworkSpoke = #<your VNet rg here> The Azure resource group in which your existing VNet is deployed. Example: "rg-hub-myh-networking"
 $vnetName = #<your VNet rg here> The existing VNet in which the Bastion resource will be created. Example: "vnet-hub-myh-weu"
