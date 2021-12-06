@@ -5,17 +5,17 @@ A script used to setup and configure Azure Bastion within the HUB spoke VNet.
 
 .DESCRIPTION
 
-A script used to setup and configure Azure Bastion within the HUB spoke VNet. The script will create a resource group for the Azure Bastion resources (if it not already exists).
-Then it will create the AzureBastionSubnet with and will associate a network security group (NSG), which holds all the required inbound and outbound security rules (if it not already exists). 
-If the AzureBastionSubnet exists but does not have associated NSG, it will attach the created NSG. The script will also create a Public IP Address (PIP) for the Bastion host (if it not exists).
-and create the Bastion host, which can take up to 5 minutes (if it not exists). Set the log and metrics settings for the bastion resource if they 
+A script used to setup and configure Azure Bastion (basic SKU) within the HUB spoke VNet. The script will create a resource group for the Azure Bastion resources (if it not already exists).
+Then it will create the AzureBastionSubnet (/26) with an associated network security group (NSG), which holds all the required inbound and outbound security rules (if it not already exists). 
+If the AzureBastionSubnet exists but does not have an associated NSG, it will attach the new created NSG. The script will also create a Public IP Address (PIP) for the Bastion host (if it not exists).
+and create the Bastion host, which can take up to 5 minutes (if it not exists). It will also set the log and metrics settings for the bastion resource if they 
 don't exist. And at the end it will lock the Azure Bastion resource group with a CanNotDelete lock.
 
 .NOTES
 
 Filename:       Build-AzureBastion.ps1
 Created:        01/06/2021
-Last modified:  02/07/2021
+Last modified:  06/12/2021
 Author:         Wim Matthyssen
 PowerShell:     Azure Cloud Shell or Azure PowerShell
 Version:        Install latest Azure Powershell modules (at least Az version 5.9.0 and Az.Network version 4.7.0 is required)
@@ -37,11 +37,12 @@ https://wmatthyssen.com/2021/06/02/azure-bastion-azure-powershell-deployment-scr
 
 $rgBastion = #<your Bastion rg here> The new Azure resource group in which the new Bastion resource will be created. Example: "rg-hub-myh-bastion"
 $bastionName = #<your name here> The name of the new Bastion resource. Example: "bas-hub-myh"
+$bastionSku = "Basic" #"Standard"
 $location = #<your region here> The used Azure public region. Example: "westeurope"
 $rgNetworkSpoke = #<your VNet rg here> The Azure resource group in which your existing VNet is deployed. Example: "rg-hub-myh-network"
 $vnetName = #<your VNet rg here> The existing VNet in which the Bastion resource will be created. Example: "vnet-hub-myh-weu"
 $subnetNameBastion = "AzureBastionSubnet"
-$subnetBastionAddress = #<your AzureBastionSubnet range here> The subnet must be at least /27 for the Basic SKU, and /26 or larger for the Standard SKU. Example: "10.1.1.96/27"
+$subnetBastionAddress = #<your AzureBastionSubnet range here> The subnet must have a minimum subnet size of /26. Example: "10.1.1.128/26"
 $nsgNameBastion = #<your AzureBastionSubnet NSG name here> The name of the NSG associated with the AzureBastionSubnet. Example: "nsg-AzureBastionSubnet"
 $bastionPipName = #<your Bastion PIP here> The public IP address of the Bastion resource. Example: "pip-bas-hub-myh"
 $bastionPipAllocationMethod = "Static"
@@ -207,7 +208,7 @@ try {
 
     $vnet = Get-AzVirtualNetwork -Name $vnetName -ResourceGroupname $rgNetworkSpoke
 
-    $bastion = New-AzBastion -ResourceGroupName $rgBastion -Name $bastionName -PublicIpAddress $bastionPip -VirtualNetwork $vnet `
+    $bastion = New-AzBastion -ResourceGroupName $rgBastion -Name $bastionName -PublicIpAddress $bastionPip -VirtualNetwork $vnet -Sku $bastionSku`
     -Tag @{env=$tagSpoke;costCenter=$tagCostCenter;businessCriticality=$tagBusinessCriticality;purpose=$tagPurpose;vnet=$vnetName}
 }
 
