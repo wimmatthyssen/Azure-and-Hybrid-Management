@@ -18,12 +18,11 @@ Keep in mind that each client computer that you want to connect to a VNet with a
 
 Filename:       Generate-authenticaton-certificates-P2S-VPN.ps1
 Created:        20/12/2021
-Last modified:  20/12/2021
+Last modified:  22/12/2021
 Author:         Wim Matthyssen
-PowerShell:     Azure Cloud Shell or Azure PowerShell
-Version:        Install latest Azure Powershell modules (at least Az version 5.9.0 and Az.Network version 4.7.0 is required)
+PowerShell:     PowerShell 5.1
 Action:         Change variables were needed to fit your needs. 
-Disclaimer:     This script is provided "As IS" with no warranties.
+Disclaimer:     This script is provided "As Is" with no warranties.
 
 .EXAMPLE
 
@@ -31,20 +30,20 @@ Disclaimer:     This script is provided "As IS" with no warranties.
 
 .LINK
 
-https://wmatthyssen.com/2021/06/02/azure-bastion-azure-powershell-deployment-script/
+
 #>
 
 ## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Variables
 
-$rootCertName = "p2s-myh-root-cert"
-$clientCertName = "p2s-myh-client-cert"
+$rootCertName = #<your root certificate name here> The name of the root certificate. Example: "p2s-myh-root-cert"
+$clientCertName = #<your client certificate name here> The name of the client certificate. Example: "p2s-myh-client-cert"
 $certStoreName = "cert:\currentuser\my"
-$certValidMonths = "3"
+$certValidMonths = #<your valid amount of months for both certificates here> The number of months both certificates are valid. Example: "3"
 $tempFolderName = "Temp"
 $tempFolder = "C:\" + $tempFolderName +"\"
-$clientCertPassword = "P@ssw0rd" | ConvertTo-SecureString -AsPlainText -Force
+$clientCertPassword = "P@ssw0rd1" | ConvertTo-SecureString -AsPlainText -Force #<replace "P@ssword1" withyour client certificate .pfx password. Example: "P@ssw0rd2"
 
 $global:currenttime= Set-PSBreakpoint -Variable currenttime -Mode Read -Action {$global:currenttime= Get-Date -UFormat "%A %m/%d/%Y %R"}
 $foregroundColor1 = "Red"
@@ -111,7 +110,7 @@ Write-Host ($writeEmptyLine + "# Client certificate $clientCertName created" + $
 
 ## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Create C:\Temp folder if not exists
+## Create the C:\Temp folder if it not exists
 
 If(!(test-path $tempFolder))
 {
@@ -123,7 +122,7 @@ Write-Host ($writeEmptyLine + "#" + $writeSpace + $tempFolderName + $writeSpace 
 
 ## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Export the client certificate to a PFX file in the C:\Temp folder
+## Export the client certificate to a .pfx file in the C:\Temp folder
 
 Export-PfxCertificate -Cert $clientCert -FilePath C:\Temp\"$clientCertName.pfx" -Password $clientCertPassword
 
@@ -137,4 +136,4 @@ Write-Host ($writeEmptyLine + "# Client certificate $clientCertName PFX file cre
 Write-Host ($writeEmptyLine + "# Script completed" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor1 $writeEmptyLine 
 
-##-------------------------------------------------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
