@@ -43,7 +43,7 @@ $certStoreName = "cert:\currentuser\my"
 $certValidMonths = #<your valid amount of months for both certificates here> The number of months both certificates are valid. Example: "3"
 $tempFolderName = "Temp"
 $tempFolder = "C:\" + $tempFolderName +"\"
-$clientCertPassword = "P@ssw0rd1" | ConvertTo-SecureString -AsPlainText -Force #<replace "P@ssword1" withyour client certificate .pfx password. Example: "P@ssw0rd2"
+$clientCertPassword = "P@ssw0rd1" | ConvertTo-SecureString -AsPlainText -Force #replace "P@ssword1" withyour client certificate .pfx password. Example: "P@ssw0rd2"
 
 $global:currenttime= Set-PSBreakpoint -Variable currenttime -Mode Read -Action {$global:currenttime= Get-Date -UFormat "%A %m/%d/%Y %R"}
 $foregroundColor1 = "Red"
