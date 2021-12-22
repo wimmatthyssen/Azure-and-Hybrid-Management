@@ -9,7 +9,8 @@ A script used to generate a new self-signed root certificate and a client certif
 The newly generated self-signed root certificate uses the default provider, which is the Microsoft Software Key Storage Provider, and it is stored in the user MY store. 
 Next to that the self-signed root certificate also uses an RSA asymmetric key with a key size of 2048 bits and expires after 3 months.
 The client certificate is generated from the self-signed root certificate and is also stored in the user MY store.
-After it is generatd the client certificate is exported as a PFX file to the C:\Temp folder. If the C:\Temp folder, which is created if it not already exsists.
+Then both certificates are exported to the C:\Temp folder, which is created if it not already exisits.
+The root certificate is exported and converted to a Base-64 encoded X.509 (.CER) file and the client certificate is exported as a PFX file. 
 The .pfx file containes the root certificate information and the entire certificate chain, and can be used and installed on another client computer to authenticate.
 
 Keep in mind that each client computer that you want to connect to a VNet with a P2S VPN connection must have a client certificate installed. 
@@ -110,7 +111,7 @@ Write-Host ($writeEmptyLine + "# Client certificate $clientCertName created" + $
 
 ## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Create the C:\Temp folder if it not exists
+## Create C:\Temp folder if not exists
 
 If(!(test-path $tempFolder))
 {
@@ -118,6 +119,23 @@ New-Item -Path "C:\" -Name $tempFolderName -ItemType $itemType -Force | Out-Null
 }
 
 Write-Host ($writeEmptyLine + "# $tempFolderName folder available" + $writeSeperatorSpaces + $currentTime)`
+-foregroundcolor $foregroundColor2 $writeEmptyLine
+
+## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Export the root certificate and convert to a Base-64 encoded X.509 (.CER) file in the C:\Temp folder 
+
+Export-Certificate -Cert $rootCert -FilePath C:\Temp\"$rootCertName-DER-encoded.cer"   
+
+$derCert = "C:\Temp\$rootCertName-DER-encoded.cer"
+$base64Cert = "C:\Temp\$rootCertName.cer" 
+
+Start-Process -FilePath "certutil.exe" -ArgumentList "-encode $derCert $base64Cert" -WindowStyle Hidden
+
+Start-Sleep -Seconds 3
+Remove-Item -Path "C:\Temp\$rootCertName-DER-encoded.cer"
+
+Write-Host ($writeEmptyLine + "# Root certificate $rootCertName Base-64 encoded X.509 CER file created in the Temp folder" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
 
 ## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -136,4 +154,4 @@ Write-Host ($writeEmptyLine + "# Client certificate $clientCertName PFX file cre
 Write-Host ($writeEmptyLine + "# Script completed" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor1 $writeEmptyLine 
 
-## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+##-------------------------------------------------------------------------------------------------------------------------------------------------------
