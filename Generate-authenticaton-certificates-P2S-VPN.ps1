@@ -117,7 +117,7 @@ If(!(test-path $tempFolder))
 New-Item -Path "C:\" -Name $tempFolderName -ItemType $itemType -Force | Out-Null
 }
 
-Write-Host ($writeEmptyLine + "#" + $writeSpace + $tempFolderName + $writeSpace + "folder available" + $writeSeperatorSpaces + $currentTime)`
+Write-Host ($writeEmptyLine + "# $tempFolderName folder available" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
 
 ## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
