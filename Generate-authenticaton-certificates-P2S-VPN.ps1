@@ -154,7 +154,7 @@ $secureClientCertPfxPassword = ConvertTo-SecureString $clientCertPfxPassword -As
 
 Export-PfxCertificate -Cert $clientCert -FilePath C:\Temp\"$clientCertName.pfx" -Password $secureClientCertPfxPassword
 
-if(Test-Path -Path  C:\Temp\"$clientCertName.pfx" -PathType Leaf){
+if(Test-Path -Path C:\Temp\"$clientCertName.pfx" -PathType Leaf){
     Write-Host ($writeEmptyLine + "# Client certificate $clientCertName PFX file created in the Temp folder" + $writeSeperatorSpaces + $currentTime)`
     -foregroundcolor $foregroundColor2 $writeEmptyLine
  }else {
