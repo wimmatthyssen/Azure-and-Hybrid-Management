@@ -18,8 +18,8 @@ Keep in mind that each client computer that you want to connect to a VNet with a
 .NOTES
 
 Filename:       Generate-authenticaton-certificates-P2S-VPN.ps1
-Created:        20/12/2021
-Last modified:  22/12/2021
+Created:        15/12/2021
+Last modified:  15/12/2021
 Author:         Wim Matthyssen
 PowerShell:     PowerShell 5.1
 Action:         Change variables were needed to fit your needs. 
@@ -44,7 +44,7 @@ $certStoreName = "cert:\currentuser\my"
 $certValidMonths = #<your valid amount of months for both certificates here> The number of months both certificates are valid. Example: "3"
 $tempFolderName = "Temp"
 $tempFolder = "C:\" + $tempFolderName +"\"
-$clientCertPassword = "P@ssw0rd1" | ConvertTo-SecureString -AsPlainText -Force #replace "P@ssword1" withyour client certificate .pfx password. Example: "P@ssw0rd2"
+$clientCertPfxPassword = #<your pfx password here> The client certificate .pfx file password. Example: "P@ssw0rd1"
 
 $global:currenttime= Set-PSBreakpoint -Variable currenttime -Mode Read -Action {$global:currenttime= Get-Date -UFormat "%A %m/%d/%Y %R"}
 $foregroundColor1 = "Red"
@@ -130,22 +130,37 @@ Export-Certificate -Cert $rootCert -FilePath C:\Temp\"$rootCertName-DER-encoded.
 $derCert = "C:\Temp\$rootCertName-DER-encoded.cer"
 $base64Cert = "C:\Temp\$rootCertName.cer" 
 
+# Convert the certificate to a Base-64 encoded X.509 (.CER) file
 Start-Process -FilePath "certutil.exe" -ArgumentList "-encode $derCert $base64Cert" -WindowStyle Hidden
 
+# Wait 3 seconds and then delete the DER-encoded certificate from the Temp folder
 Start-Sleep -Seconds 3
 Remove-Item -Path "C:\Temp\$rootCertName-DER-encoded.cer"
 
-Write-Host ($writeEmptyLine + "# Root certificate $rootCertName Base-64 encoded X.509 CER file created in the Temp folder" + $writeSeperatorSpaces + $currentTime)`
--foregroundcolor $foregroundColor2 $writeEmptyLine
+if(Test-Path -Path $base64Cert -PathType Leaf){
+    Write-Host ($writeEmptyLine + "# Root certificate $rootCertName Base-64 encoded X.509 CER file created in the Temp folder" + $writeSeperatorSpaces + $currentTime)`
+    -foregroundcolor $foregroundColor2 $writeEmptyLine
+ }else {
+    Write-Host ($writeEmptyLine + "# Root certificate $rootCertName Base-64 encoded X.509 CER file not created in the Temp folder" + $writeSeperatorSpaces + $currentTime)`
+    -foregroundcolor $foregroundColor1 $writeEmptyLine
+ }
 
 ## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Export the client certificate to a .pfx file in the C:\Temp folder
 
-Export-PfxCertificate -Cert $clientCert -FilePath C:\Temp\"$clientCertName.pfx" -Password $clientCertPassword
+# Encrypted the standard password string into a secure string
+$secureClientCertPfxPassword = ConvertTo-SecureString $clientCertPfxPassword -AsPlainText -Force
 
-Write-Host ($writeEmptyLine + "# Client certificate $clientCertName PFX file created in the Temp folder" + $writeSeperatorSpaces + $currentTime)`
--foregroundcolor $foregroundColor2 $writeEmptyLine
+Export-PfxCertificate -Cert $clientCert -FilePath C:\Temp\"$clientCertName.pfx" -Password $secureClientCertPfxPassword
+
+if(Test-Path -Path  C:\Temp\"$clientCertName.pfx" -PathType Leaf){
+    Write-Host ($writeEmptyLine + "# Client certificate $clientCertName PFX file created in the Temp folder" + $writeSeperatorSpaces + $currentTime)`
+    -foregroundcolor $foregroundColor2 $writeEmptyLine
+ }else {
+    Write-Host ($writeEmptyLine + "# Client certificate $clientCertName PFX file not created in the Temp folder" + $writeSeperatorSpaces + $currentTime)`
+    -foregroundcolor $foregroundColor1 $writeEmptyLine
+ }
 
 ## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
