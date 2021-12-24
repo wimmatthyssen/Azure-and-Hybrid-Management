@@ -169,7 +169,7 @@ if(Test-Path -Path C:\Temp\"$clientCertName.pfx" -PathType Leaf){
 # Open the certificate with Notepad. If the text "Begin Certificate" appears at the beginning of the file, it is in base64 format.
 notepad $base64Cert
 
-Write-Host ($writeEmptyLine + "# Checks completed" + $writeSeperatorSpaces + $currentTime)`
+Write-Host ($writeEmptyLine + "# Check completed" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
 
 ## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
