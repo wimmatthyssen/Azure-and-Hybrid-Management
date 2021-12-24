@@ -13,7 +13,7 @@ Then both certificates are exported to the C:\Temp folder, which is created if i
 The root certificate is exported and converted to a Base-64 encoded X.509 (.CER) file and the client certificate is exported as a PFX file. 
 The .pfx file containes the root certificate information and the entire certificate chain, and can be used and installed on another client computer to authenticate.
 Keep in mind that each client computer that you want to connect to a VNet with a P2S VPN connection must have a client certificate installed.
-The root certificate is also opened with Notepad to verify if it is in base64 format. If the text "Begin Certificate" appears at the beginning of the file, it is in base64 format.
+The root certificate is also opened with Notepad to verify if it is in the base64 format. If the text "Begin Certificate" appears at the beginning of the file, it is in base64 format.
  
 .NOTES
 
