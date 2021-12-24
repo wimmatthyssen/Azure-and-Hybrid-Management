@@ -166,7 +166,7 @@ if(Test-Path -Path C:\Temp\"$clientCertName.pfx" -PathType Leaf){
 
 ## Check if the root certificate is base 64 encoded
 
-# Open the certificate with Notepad. If the text "Begin Certificate" appears at the beginning of the file, it is in base64 format.
+# Open the certificate with Notepad. If the text "Begin Certificate" appears at the beginning of the file, it is in the base64 format.
 notepad $base64Cert
 
 Write-Host ($writeEmptyLine + "# Check completed" + $writeSeperatorSpaces + $currentTime)`
