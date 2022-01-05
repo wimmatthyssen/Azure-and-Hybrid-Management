@@ -29,8 +29,7 @@ Disclaimer:     This script is provided "As IS" with no warranties.
 .\Configure-P2S-VPN-to-an-existing-VNet-using-Azure-certificate-authentication.ps1
 
 .LINK
-
-
+https://wmatthyssen.com/2022/01/05/azure-powershell-script-configure-a-p2s-vpn-to-an-existing-vnet-using-azure-certificate-authentication/
 #>
 
 ## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
