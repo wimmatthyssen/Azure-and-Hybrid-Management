@@ -63,7 +63,6 @@ $isAdministrator = $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltIn
 if ($isAdministrator -eq $false) {
     Write-Host ($writeEmptyLine + "# Please run PowerShell as Administrator" + $writeSeperatorSpaces + $currentTime)`
     -foregroundcolor $foregroundColor1 $writeEmptyLine
-    Start-Sleep -s 5
     exit
 }
  
