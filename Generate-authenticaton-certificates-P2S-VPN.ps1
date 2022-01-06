@@ -30,8 +30,8 @@ Disclaimer:     This script is provided "As Is" with no warranties.
 .\Generate-authenticaton-certificates-P2S-VPN.ps1
 
 .LINK
-https://wmatthyssen.com/2021/12/15/powershell-script-generate-a-self-signed-root-certificate-and-client-certificate-for-use-with-an-azure-p2s-vpn/
 
+https://wmatthyssen.com/2021/12/15/powershell-script-generate-a-self-signed-root-certificate-and-client-certificate-for-use-with-an-azure-p2s-vpn/
 #>
 
 ## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
