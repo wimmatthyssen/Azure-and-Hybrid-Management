@@ -128,18 +128,6 @@ Write-Host ($writeEmptyLine + "# Client root certificate $rootCertName added to 
 
 ## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Create C:\Temp folder if not exists
-
-If(!(test-path $tempFolder))
-{
-New-Item -Path "C:\" -Name $tempFolderName -ItemType $itemType -Force | Out-Null
-}
-
-Write-Host ($writeEmptyLine + "# $tempFolderName folder available" + $writeSeperatorSpaces + $currentTime)`
--foregroundcolor $foregroundColor2 $writeEmptyLine
-
-## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 ## Generate VPN client configuration files and download them in the C:\Temp folder
 
 # Generate VPN client configuration files
