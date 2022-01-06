@@ -10,7 +10,6 @@ First of all some checks will be performed, to see if the VPN gateway variable i
 Then the script will also check if the root certificate is present in the C:\Temp folder.
 If one of the checks fails, the script will be exited. 
 But if all checks are OK, the script will continue with adding the VPN client address pool and the client root certificate to the VPN gateway. 
-Then the Temp folder is created on the C: drive, if the folder not already exists.
 And at the end, the VPN client configuration files are generated and downloaded (vpnclientconfiguration.zip) to the C:\Temp folder.
  
 .NOTES
