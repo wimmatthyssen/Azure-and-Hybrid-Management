@@ -16,7 +16,7 @@ And at the end, the VPN client configuration files are generated and downloaded 
 
 Filename:       Configure-P2S-VPN-to-an-existing-VNet-using-Azure-certificate-authentication.ps1
 Created:        05/01/2022
-Last modified:  05/01/2021
+Last modified:  05/01/2022
 Author:         Wim Matthyssen
 PowerShell:     Azure Cloud Shell or Azure PowerShell
 Version:        Install latest Azure Powershell modules (at least Az version 5.9.0 and Az.Network version 4.7.0 is required)
