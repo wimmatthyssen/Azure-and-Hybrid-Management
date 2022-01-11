@@ -11,7 +11,7 @@ After installation the Azure Portal app folder and the .exe file will be deleted
  
 .NOTES
  
-Filename:       Download-and-install-Azure-Portal-app.ps1
+Filename:       Download-and-Install-Azure-Portal-app.ps1
 Created:        02/01/2020
 Last modified:  11/01/2020
 Author:         Wim Matthyssen
@@ -25,7 +25,7 @@ Disclaimer:     This script is provided "As Is" with no warranties.
  
 .EXAMPLE
  
-Download-and-install-Azure-Portal-app.ps1
+Download-and-Install-Azure-Portal-app.ps1
  
 .LINK
  
