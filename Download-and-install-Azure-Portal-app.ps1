@@ -15,7 +15,7 @@ Filename:       Download-and-install-Azure-Portal-app.ps1
 Created:        02/01/2020
 Last modified:  11/01/2020
 Author:         Wim Matthyssen
-OS:             Windows Server 2016/2019 or Windows 10        
+OS:             Windows Server 2016/2019/2022 or Windows 10/11        
 PowerShell:     5.1
 Requires:       -RunAsAdministrator
 OS:             Windows 10, Windows 11, Windows Server 2016, Windows Server 2019 and Windows Server 2022
