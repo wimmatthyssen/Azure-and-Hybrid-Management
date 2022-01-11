@@ -91,7 +91,7 @@ If(!(test-path $tempAzurePortalAppFolder))
 New-Item -Path $tempFolder -Name $azurePortalAppFolderName -ItemType $itemType | Out-Null
 }
   
-Write-Host ($writeEmptyLine + "# $azurePortalAppFolderName folder available $tempFolderName folder" + $writeSeperatorSpaces + $currentTime)`
+Write-Host ($writeEmptyLine + "# $azurePortalAppFolderName folder available in the $tempFolderName folder" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
  
 ## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
