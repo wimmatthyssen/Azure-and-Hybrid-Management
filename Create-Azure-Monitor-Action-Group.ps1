@@ -17,7 +17,7 @@ Author:         Wim Matthyssen
 PowerShell:     Azure Cloud Shell or Azure PowerShell
 Version:        Install latest Azure Powershell modules
 Action:         Change variables were needed to fit your needs. 
-Disclaimer:     This script is provided "As IS" with no warranties.
+Disclaimer:     This script is provided "As Is" with no warranties.
 
 .EXAMPLE
 
