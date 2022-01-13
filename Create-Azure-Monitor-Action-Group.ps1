@@ -16,7 +16,7 @@ Created:        26/11/2019
 Last modified:  12/01/2022
 Author:         Wim Matthyssen
 PowerShell:     Azure Cloud Shell or Azure PowerShell
-Version:        Install latest Azure Powershell modules
+Version:        Install latest Azure PowerShell modules
 Action:         Change variables were needed to fit your needs. 
 Disclaimer:     This script is provided "As Is" with no warranties.
 
@@ -109,7 +109,7 @@ $tag.Add($tagCostCenterKey,$tagCostCenterValue)
 $tag.Add($tagBusinessCriticalityKey,$tagBusinessCriticalityValue)
 $tag.Add($tagPurposeKey,$tagPurposeValue)
 
-Write-Host ($writeEmptyLine + "# Tags set into th proper data type" + $writeSeperatorSpaces + $currentTime)`
+Write-Host ($writeEmptyLine + "# Tags set into the proper data type" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine 
 
 ## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
