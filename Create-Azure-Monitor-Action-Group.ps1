@@ -1,12 +1,13 @@
-﻿<#
+<#
 .SYNOPSIS
 
 A script used to create an Azure Monitor action group.
 
 .DESCRIPTION
 
-A script used to used to create an Azure Monitor action group. 
-The Action Type used in this script is Email.
+A script used to used to create an Azure Monitor action group with the Email action type.
+A check is performed to see if the PowerShell window is running as Administrator (which is a requirement), otherwise the Azure PowerShell script will be exited.
+And specified tags are set with the specified key/value pairs into the proper data type (dictionary object instead of a hash table) and added to the action group resource.
 
 .NOTES
 
@@ -31,8 +32,6 @@ https://wmatthyssen.com/2019/11/26/create-an-azure-monitor-action-group-with-azu
 ## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Variables
-
-$resourceProviderNamespace = "Microsoft.AlertsManagement"
 
 $rgActionGroup = #<your Action Group rg here> The name of the resource group in which the action group is saved. Example: "rg-hub-myh-management"
 $actionGroupName = #<your Action Group name here> The name of the Action Group. Example: "ag-hub-myh-admin"
@@ -64,7 +63,7 @@ if ($PSVersionTable.Platform -eq "Unix") {
     -foregroundcolor $foregroundColor1 $writeEmptyLine
     
     ## Start script execution    
-    Write-Host ($writeEmptyLine + "# Script started. Without any errors, it will need around 6 minutes to complete" + $writeSeperatorSpaces + $currentTime)`
+    Write-Host ($writeEmptyLine + "# Script started. Without any errors, it will need around 1 minute to complete" + $writeSeperatorSpaces + $currentTime)`
     -foregroundcolor $foregroundColor1 $writeEmptyLine 
 } else {
     $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
@@ -74,12 +73,13 @@ if ($PSVersionTable.Platform -eq "Unix") {
         if ($isAdministrator -eq $false) {
         Write-Host ($writeEmptyLine + "# Please run PowerShell as Administrator" + $writeSeperatorSpaces + $currentTime)`
         -foregroundcolor $foregroundColor1 $writeEmptyLine
+        Start-Sleep -s 3
         exit
         }
         else {
 
         ## If running as Administrator, start script execution    
-        Write-Host ($writeEmptyLine + "# Script started. Without any errors, it will need around 6 minutes to complete" + $writeSeperatorSpaces + $currentTime)`
+        Write-Host ($writeEmptyLine + "# Script started. Without any errors, it will need around 1 minutes to complete" + $writeSeperatorSpaces + $currentTime)`
         -foregroundcolor $foregroundColor1 $writeEmptyLine 
         }
 }
@@ -92,16 +92,7 @@ Set-Item Env:\SuppressAzurePowerShellBreakingChangeWarnings "true"
 
 ## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Register required Azure resource provider
-
-Register-AzResourceProvider -ProviderNamespace $resourceProviderNamespace
-
-Write-Host ($writeEmptyLine + "# Required resource provider $resourceProviderNamespace registerd" + $writeSeperatorSpaces + $currentTime)`
--foregroundcolor $foregroundColor2 $writeEmptyLine 
-
-## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-## Create a new Action Group Email receiver in memory 
+## Create a new action group Email receiver in memory 
 
 $emailReceiver = New-AzActionGroupReceiver -Name $emailReceiverName -EmailReceiver -EmailAddress $emailAddress
 
@@ -110,14 +101,20 @@ Write-Host ($writeEmptyLine + "# Action Group Receiver $emailReceiverName saved 
 
 ## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Create a new Action Group
+## Set and add tags with the specified key/value pairs into the proper data type (dictionary object instead of a hash table)
 
-# Set tags (Key,Value)
 $tag = New-Object "System.Collections.Generic.Dictionary``2[System.String,System.String]"
 $tag.Add($tagSpokeKey,$tagSpokeValue)
 $tag.Add($tagCostCenterKey,$tagCostCenterValue)
 $tag.Add($tagBusinessCriticalityKey,$tagBusinessCriticalityValue)
 $tag.Add($tagPurposeKey,$tagPurposeValue)
+
+Write-Host ($writeEmptyLine + "# Tags set into th proper data type" + $writeSeperatorSpaces + $currentTime)`
+-foregroundcolor $foregroundColor2 $writeEmptyLine 
+
+## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Create a new or update the existing action group
 
 Set-AzActionGroup -Name $actionGroupName -ResourceGroup $rgActionGroup -ShortName $actionGroupShortName -Receiver $emailReceiver -Tag $tag
 
