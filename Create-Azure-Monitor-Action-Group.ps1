@@ -26,7 +26,7 @@ Disclaimer:     This script is provided "As Is" with no warranties.
 
 .LINK
 
-https://wmatthyssen.com/2019/11/26/create-an-azure-monitor-action-group-with-azure-powershell/
+https://wmatthyssen.com/2022/01/12/create-an-azure-monitor-action-group-with-azure-powershell/
 #>
 
 ## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
