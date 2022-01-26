@@ -3,7 +3,7 @@ This repository contains contains Azure PowerShell and PowerShell scripts you ca
 
 You can find more information about these scripts on my blog: https://wmatthyssen.com
 
-Currenently this repository holds the following scritps:
+Currently this repository holds the following scritps:
 
 - **Create-Azure-Monitor-Action-Group.ps1**
 
