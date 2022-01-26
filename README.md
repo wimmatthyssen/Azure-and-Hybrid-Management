@@ -5,7 +5,7 @@ You can find more information about these scripts on my blog: https://wmatthysse
 
 Currenently this repository holds the following scritps:
 
-- **Build-ManagementGroups-Tree-Hierarchy.ps1**
+- **Create-Azure-Monitor-Action-Group.ps1**
 
-  More information about this script used to build a management groups tree structure can be found on my blog: https://wmatthyssen.com/2020/08/01/azure-powershell-script-create-a-management-group-tree-hierarchy/
+  More information about this script used to create an Azure Monitor action group can be found on my blog: https://wmatthyssen.com/2022/01/12/create-an-azure-monitor-action-group-with-azure-powershell/
 
