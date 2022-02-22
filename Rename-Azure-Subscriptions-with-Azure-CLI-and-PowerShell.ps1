@@ -49,7 +49,7 @@ $acceptanceShortName = "<acceptance short name here>" # Best is to use a three l
 $developmentShortName = "<development short name here>" # Best is to use a three letter abbreviation. Example: "dev"
 $testShortName = "<test short name here>" # Best is to use a three letter abbreviation. Example: "tst"
 
-$subIdManagement = "<your Managemenet Subcriprition ID here>" # Example: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+$subIdManagement = "<your Management Subcriprition ID here>" # Example: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 $subIdIdentity = "<your Identity Subcriprition ID here>" # Example: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 $subIdConnectivity = "<your Connectivity Subcriprition ID here>" # Example: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 $subIdProduction = "<your Production Subcriprition ID here>" # Example: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
