@@ -28,13 +28,13 @@ https://wmatthyssen.com/2021/04/21/azure-governance-rename-an-azure-subscription
 
 ## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Sign in with Azure CLI
+## Sign in with Azure CLI (CLI)
 
 az login
 
 ## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Update Azure CLI to the latest version
+## Update Azure CLI to the latest version (CLI)
 
 az upgrade
 
@@ -80,7 +80,7 @@ Write-Host ($writeEmptyLine + "# Script started. Without any errors, it will nee
  
 ## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Rename subscriptions
+## Rename subscriptions (CLI)
 
 az account subscription rename --subscription-id $subIdManagement --name $subNameManagement
 az account subscription rename --subscription-id $subIdIdentity --name $subNameIdentity
