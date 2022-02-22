@@ -17,4 +17,6 @@ Currently this repository holds the following scritps:
 
   More information about this script used to download and install the Microsoft Azure Portal app can be found on my blog: https://wmatthyssen.com/2022/01/12/create-an-azure-monitor-action-group-with-azure-powershell/
 
+- **Rename-Azure-Subscriptions-with-Azure-CLI-and-PowerShell.ps1**
 
+  More information about this script used to rename Azure Subscriptions with Azure CLI and PowerShell can be found on my blog: https://wmatthyssen.com/2021/04/21/azure-governance-rename-an-azure-subscription-with-azure-cli-and-powershell/
