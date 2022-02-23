@@ -20,3 +20,7 @@ Currently this repository holds the following scritps:
 - **Rename-Azure-Subscriptions-with-Azure-CLI-and-PowerShell.ps1**
 
   More information about this script used to rename Azure Subscriptions with Azure CLI and PowerShell can be found on my blog: https://wmatthyssen.com/2021/04/21/azure-governance-rename-an-azure-subscription-with-azure-cli-and-powershell/
+
+- **Setup-Azure-Cloud-Shell.ps1**
+
+  More information about this script used to setup Azure Cloud Shell in an Azure environment can be found on my blog: 
