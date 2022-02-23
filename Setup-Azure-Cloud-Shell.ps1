@@ -2,11 +2,11 @@
 
 .SYNOPSIS
 
-A script used to setup Azure Cloud Shell for an Azure environment.
+A script used to setup Cloud Shell for an Azure environment.
 
 .DESCRIPTION
 
-A script used to setup Azure Cloud Shell for an Azure environment.
+A script used to setup Cloud Shell for an Azure environment.
 The script will first change the current context to use the management subscription.
 Then it will store a set of specified tags into a hash table.
 Next it will create a resource group for Cloud Shell resources, if it not already exists.
@@ -67,32 +67,23 @@ $writeSeperatorSpaces = " - "
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Check if PowerShell runs as Administrator (when not running from Cloud Shell), otherwise exit the script
+## Check if PowerShell runs as Administrator, otherwise exit the script
 
-if ($PSVersionTable.Platform -eq "Unix") {
-    Write-Host ($writeEmptyLine + "# Running in Cloud Shell" + $writeSeperatorSpaces + $currentTime)`
+$currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
+$isAdministrator = $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+
+# Check if running as Administrator, otherwise exit the script
+if ($isAdministrator -eq $false) {
+    Write-Host ($writeEmptyLine + "# Please run PowerShell as Administrator" + $writeSeperatorSpaces + $currentTime)`
     -foregroundcolor $foregroundColor1 $writeEmptyLine
-    
-    # Start script execution    
+    Start-Sleep -s 3
+    exit
+    }
+else {
+    # If running as Administrator, start script execution    
     Write-Host ($writeEmptyLine + "# Script started. Without any errors, it will need around 2 minutes to complete" + $writeSeperatorSpaces + $currentTime)`
     -foregroundcolor $foregroundColor1 $writeEmptyLine 
-} else {
-    $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
-    $isAdministrator = $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
-
-        # Check if running as Administrator, otherwise exit the script
-        if ($isAdministrator -eq $false) {
-        Write-Host ($writeEmptyLine + "# Please run PowerShell as Administrator" + $writeSeperatorSpaces + $currentTime)`
-        -foregroundcolor $foregroundColor1 $writeEmptyLine
-        Start-Sleep -s 3
-        exit
-        }
-        else {
-
-        # If running as Administrator, start script execution    
-        Write-Host ($writeEmptyLine + "# Script started. Without any errors, it will need around 2 minutes to complete" + $writeSeperatorSpaces + $currentTime)`
-        -foregroundcolor $foregroundColor1 $writeEmptyLine 
-        }
+     }
 }
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -171,3 +162,4 @@ Write-Host ($writeEmptyLine + "# Script completed" + $writeSeperatorSpaces + $cu
 -foregroundcolor $foregroundColor1 $writeEmptyLine 
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
