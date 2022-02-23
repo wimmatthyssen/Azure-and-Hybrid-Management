@@ -10,7 +10,7 @@ A script used to setup Cloud Shell for an Azure environment.
 The script will first change the current context to use the management subscription.
 Then it will store a set of specified tags into a hash table.
 Next it will create a resource group for Cloud Shell resources, if it not already exists.
-Then it will create a general purpose v2 storage account with specific configuration settings (like minimum TLS version set to 1.2, allow public access disabled), if it not already exists.
+Then it will create a general purpose v2 storage account with specific configuration settings (like minimum TLS version set to 1.2, allow public access set to disabled), if it not already exists.
 And at the end it will create an Azure File Share with a size of 6 GiB, if it not already exists.
 
 .NOTES
