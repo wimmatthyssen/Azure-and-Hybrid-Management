@@ -2,11 +2,11 @@
 
 .SYNOPSIS
 
-A script used to setup Cloud Shell for an Azure environment.
+A script used to setup Cloud Shell in an Azure environment.
 
 .DESCRIPTION
 
-A script used to setup Cloud Shell for an Azure environment.
+A script used to setup Cloud Shell in an Azure environment.
 The script will first change the current context to use the management subscription.
 Then it will store a set of specified tags into a hash table.
 Next it will create a resource group for Cloud Shell resources, if it not already exists.
