@@ -2,11 +2,11 @@
 
 .SYNOPSIS
 
-A script used to setup Cloud Shell in an Azure environment.
+A script used to setup Cloud Shell for an Azure environment.
 
 .DESCRIPTION
 
-A script used to setup Cloud Shell in an Azure environment.
+A script used to setup Cloud Shell for an Azure environment.
 The script will first change the current context to use the management subscription.
 Then it will store a set of specified tags into a hash table.
 Next it will create a resource group for Cloud Shell resources, if it not already exists.
@@ -39,15 +39,12 @@ Set-AzContext -tenantID "xxxxxxxx-xxxx-xxxx-xxxxxxxxxxxx" (if not using the defa
 
 ## Variables
 
-$companyShortName ="myh" # <your company short name here> Best is to use a three letter abbreviation. Example: "myh"
 $spoke = "hub"
-$location = "westeurope" # Cloud Shell region
+$location = #<your region here> The used Azure public region. Example: "westeurope"
 $purpose = "cloudshell"
 
-$skuShortLRS = "lrs"
-
-$rgStorageSpoke = "rg" + "-" + $spoke + "-" + $companyShortName + "-" + "storage"
-$cloudShellStorageAccount = "st" + $skuShortlrs + $spoke + $companyShortName +  "cs"
+$rgStorageSpoke = #<your Azure Cloud Shell rg here> The new Azure resource group in which the new Cloud Shell resources will be created. Example: "rg-hub-myh-storage"
+$cloudShellStorageAccount = #<your storage account name here> The name of the storage account used by Cloud Shell  Example: "stlrshubmyhcs"
 $storageSkuNameStandardLrs = "Standard_LRS"
 $storageAccountType = "StorageV2"
 $storageMinimumTlsVersion = "TLS1_2"
@@ -55,12 +52,12 @@ $storageMinimumTlsVersion = "TLS1_2"
 $fileShareAccessTier = "TransactionOptimized"
 $fileShareQuotaGiB = 6 
 
-$tagSpokeName = "env"
-$tagCostCenterName  = "costCenter"
-$tagCostCenterValue = "it"
-$tagBusinessCriticalityNAme  = "businessCriticality"
-$tagBusinessCriticalityValue = "critical"
-$tagPurposeName  = "purpose"
+$tagSpokeName = #<your environment tag name here> The environment tag name you want to use. Example:"env"
+$tagCostCenterName  = #<your costCenter tag name here> The costCenter tag name you want to use. Example:"costCenter"
+$tagCostCenterValue = #<your costCenter tag value here> The costCenter tag value you want to use. Example: "it"
+$tagBusinessCriticalityName = #<your businessCriticality tag name here> The businessCriticality tag name you want to use. Example:"businessCriticality"
+$tagBusinessCriticalityValue = #<your businessCriticality tag value here> The businessCriticality tag value you want to use. Example: "critical"
+$tagPurposeName  = #<your purpose tag name here> The purpose tag name you want to use. Example:"purpose"
 
 $global:currenttime= Set-PSBreakpoint -Variable currenttime -Mode Read -Action {$global:currenttime= Get-Date -UFormat "%A %m/%d/%Y %R"}
 $foregroundColor1 = "Red"
