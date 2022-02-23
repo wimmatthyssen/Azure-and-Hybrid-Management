@@ -19,7 +19,7 @@ Filename:       Setup-Azure-Cloud-Shell.ps1
 Created:        30/07/2020
 Last modified:  23/02/2022
 Author:         Wim Matthyssen
-PowerShell:     PowerShell 5.1; Azure PowerShell
+PowerShell:     Azure PowerShell
 Version:        Install latest Az modules
 Action:         Change variables where needed to fit your needs
 Disclaimer:     This script is provided "As Is" with no warranties.
