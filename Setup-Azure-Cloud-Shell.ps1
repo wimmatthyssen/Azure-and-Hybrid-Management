@@ -78,12 +78,10 @@ if ($isAdministrator -eq $false) {
     -foregroundcolor $foregroundColor1 $writeEmptyLine
     Start-Sleep -s 3
     exit
-    }
-else {
+} else {
     # If running as Administrator, start script execution    
     Write-Host ($writeEmptyLine + "# Script started. Without any errors, it will need around 2 minutes to complete" + $writeSeperatorSpaces + $currentTime)`
     -foregroundcolor $foregroundColor1 $writeEmptyLine 
-     }
 }
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
