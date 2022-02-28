@@ -10,14 +10,14 @@ A script used to setup Azure Cloud Shell for an Azure environment.
 The script will first change the current context to use the management subscription.
 Then it will store a set of specified tags into a hash table.
 Next it will create a resource group for Cloud Shell resources, if it not already exists.
-Then it will create a general purpose v2 storage account with specific configuration settings (like minimum TLS version set to 1.2, allow public access set to disabled), if it not already exists.
+Then it will create a general purpose v2 storage account with specific configuration settings (like minimum TLS version set to 1.2, allow public access disabled), if it not already exists.
 And at the end it will create an Azure File Share with a size of 6 GiB, if it not already exists.
 
 .NOTES
 
 Filename:       Setup-Azure-Cloud-Shell.ps1
 Created:        30/07/2020
-Last modified:  23/02/2022
+Last modified:  28/02/2022
 Author:         Wim Matthyssen
 PowerShell:     Azure PowerShell
 Version:        Install latest Az modules
@@ -44,7 +44,7 @@ $spoke = "hub"
 $location = #<your region here> The used Azure public region. Example: "westeurope"
 $purpose = "cloudshell"
 
-$rgStorageSpoke = #<your Azure Cloud Shell rg here> The new Azure resource group in which the new Cloud Shell resources will be created. Example: "rg-hub-myh-storage"
+$rgStorageSpoke = #<your Azure Cloud Shell rg here> The new Azure resource group in which the new Cloud Shell resources will be created. Example: "rg-hub-myh-storage-01""
 $cloudShellStorageAccount = #<your storage account name here> The name of the storage account used by Cloud Shell  Example: "stlrshubmyhcs"
 $storageSkuNameStandardLrs = "Standard_LRS"
 $storageAccountType = "StorageV2"
@@ -107,7 +107,7 @@ Write-Host ($writeEmptyLine + "# Management Subscription in current tenant selec
 
 ## Store the specified set of tags in a hash table
 
-$tag = @{$tagSpokeName=$spoke;$tagCostCenterName=$tagCostCenterValue;$tagBusinessCriticalityName=$tagBusinessCriticalityValue;$tagPurposeName =$purpose}
+$tags = @{$tagSpokeName=$spoke;$tagCostCenterName=$tagCostCenterValue;$tagBusinessCriticalityName=$tagBusinessCriticalityValue}
 
 Write-Host ($writeEmptyLine + "# Specified set of tags available to add" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine 
@@ -119,8 +119,16 @@ Write-Host ($writeEmptyLine + "# Specified set of tags available to add" + $writ
 try {
     Get-AzResourceGroup -Name $rgStorageSpoke -ErrorAction Stop | Out-Null 
 } catch {
-    New-AzResourceGroup -Name $rgStorageSpoke -Location $location -Tag $tag -Force | Out-Null 
+    New-AzResourceGroup -Name $rgStorageSpoke -Location $location -Force | Out-Null 
 }
+
+# Set tags rg storage
+Set-AzResourceGroup -Name $rgStorageSpoke -Tag $tags | Out-Null
+
+# Add purpose tag rg storage
+$storeTags = (Get-AzResourceGroup -Name $rgStorageSpoke).Tags
+$storeTags += @{$tagPurposeName ="storage"}
+Set-AzResourceGroup -Name $rgStorageSpoke -Tag $storeTags | Out-Null
 
 Write-Host ($writeEmptyLine + "# Resource group $rgStorageSpoke available" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
@@ -133,8 +141,16 @@ try {
     Get-AzStorageAccount -ResourceGroupName $rgStorageSpoke -Name $cloudShellStorageAccount -ErrorAction Stop | Out-Null 
 } catch {
     New-AzStorageAccount -ResourceGroupName $rgStorageSpoke -Name $cloudShellStorageAccount -SkuName $storageSKUNameStandardLRS -Location $location -Kind $storageAccountType `
-    -AllowBlobPublicAccess $false -MinimumTlsVersion $storageMinimumTlsVersion -Tag $tag | Out-Null 
+    -AllowBlobPublicAccess $false -MinimumTlsVersion $storageMinimumTlsVersion | Out-Null 
 }
+
+# Set tags storage account
+Set-AzStorageAccount -ResourceGroupName $rgStorageSpoke -Name $cloudShellStorageAccount -Tag $tags | Out-Null
+
+# Add purpose tag storage account
+$storeTags = (Get-AzStorageAccount -ResourceGroupName $rgStorageSpoke -Name $cloudShellStorageAccount).Tags
+$storeTags += @{$tagPurposeName=$purpose}
+Set-AzStorageAccount -ResourceGroupName $rgStorageSpoke -Name $cloudShellStorageAccount -Tag $storeTags | Out-Null
 
 Write-Host ($writeEmptyLine + "# Storage account $cloudShellStorageAccount created" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
@@ -146,9 +162,17 @@ Write-Host ($writeEmptyLine + "# Storage account $cloudShellStorageAccount creat
 try {
     Get-AzRmStorageShare -ResourceGroupName $rgStorageSpoke -StorageAccountName $cloudShellStorageAccount -Name $purpose -ErrorAction Stop | Out-Null 
 } catch {
-    New-AzRmStorageShare -ResourceGroupName $rgStorageSpoke -StorageAccountName $cloudShellStorageAccount -Name $purpose -AccessTier $fileShareAccessTier -QuotaGiB $fileShareQuotaGiB `
-    -Metadata $tag | Out-Null 
+    New-AzRmStorageShare -ResourceGroupName $rgStorageSpoke -StorageAccountName $cloudShellStorageAccount -Name $purpose -AccessTier $fileShareAccessTier `
+    -QuotaGiB $fileShareQuotaGiB | Out-Null 
 }
+
+# Set Metadata file share
+Update-AzRmStorageShare -ResourceGroupName $rgStorageSpoke -StorageAccountName $cloudShellStorageAccount -Name $purpose -Metadata  $tags | Out-Null
+
+# Add purpose metadata file share
+$storeTags = (Get-AzRmStorageShare -ResourceGroupName $rgStorageSpoke -StorageAccountName $cloudShellStorageAccount -Name $purpose).Metadata
+$storeTags += @{$tagPurposeName=$purpose}
+Update-AzRmStorageShare -ResourceGroupName $rgStorageSpoke -StorageAccountName $cloudShellStorageAccount -Name $purpose -Metadata $storeTags | Out-Null
 
 Write-Host ($writeEmptyLine + "# Azure file share $purpose created" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
@@ -161,4 +185,3 @@ Write-Host ($writeEmptyLine + "# Script completed" + $writeSeperatorSpaces + $cu
 -foregroundcolor $foregroundColor1 $writeEmptyLine 
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
