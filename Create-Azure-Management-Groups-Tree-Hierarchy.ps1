@@ -26,7 +26,7 @@ Disclaimer:     This script is provided "As Is" with no warranties.
 
 .LINK
 
-https://wmatthyssen.com/2020/08/01/azure-powershell-script-create-a-management-group-tree-hierarchy/
+https://wmatthyssen.com/2022/04/04/azure-powershell-script-create-a-management-group-tree-hierarchy/
 #>
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
