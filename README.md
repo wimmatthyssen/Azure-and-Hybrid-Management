@@ -5,7 +5,7 @@ You can find more information about these scripts on my blog: https://wmatthysse
 
 Currently this repository holds the following scritps:
 
-- **Build-ManagementGroups-Tree-Hierarchy.ps1**
+- **Create-Azure-Management-Groups-Tree-Hierarchy.ps1**
 
   More information about this script used to build a management groups tree structure can be found on my blog: https://wmatthyssen.com/2020/08/01/azure-powershell-script-create-a-management-group-tree-hierarchy/
 
