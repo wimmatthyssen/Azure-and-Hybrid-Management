@@ -12,7 +12,7 @@ Check if the PowerShell window is running as Administrator (which is a requireme
 Suppress breaking change warning messages.
 Store the specified set of tags in a hash table.
 Set and add tags with the specified key/value pairs into the proper data type (dictionary object instead of a hash table) to be able to use them with an Action Group.
-Create a resource group for the Action Group resource, if it not already exists. Add specified tags.
+Create a resource group for the action group resource, if it not already exists. Add specified tags.
 Create a new action group Email receiver in memory.
 Create a new or update the existing action group.
 Lock the Action Group resource group with a CanNotDelete lock.
@@ -46,9 +46,9 @@ https://wmatthyssen.com/2019/11/26/create-an-azure-monitor-action-group-with-azu
 $spoke = "hub"
 $purpose = "monitor"
 
-$rgActionGroup = #<your Action Group rg here> The name of the resource group in which the action group is saved. Example: "rg-hub-myh-management"
-$actionGroupName = #<your Action Group name here> The name of the Action Group. Example: "ag-hub-myh-admin"
-$actionGroupShortName = #<your Action Group display name here> The name used when notifications are sent using this group, max 12 characters long. Example: "ag-admin"
+$rgActionGroup = #<your action group rg here> The name of the resource group in which the action group is saved. Example: "rg-hub-myh-management"
+$actionGroupName = #<your action group name here> The name of the action group. Example: "ag-hub-myh-admin"
+$actionGroupShortName = #<your action group display name here> The name used when notifications are sent using this group, max 12 characters long. Example: "ag-admin"
 $emailReceiverName = "emailreceiver"
 $emailAddress = #<your email address here> The email address you want to use. Example: "test@demo.com"
 
@@ -127,7 +127,7 @@ Write-Host ($writeEmptyLine + "# Tags set into the proper data type" + $writeSep
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Create a resource group for the Action Group resource, if it not already exists. Add specified tags
+## Create a resource group for the action group resource, if it not already exists. Add specified tags
 
 try {
     Get-AzResourceGroup -Name $rgActionGroup -ErrorAction Stop | Out-Null
