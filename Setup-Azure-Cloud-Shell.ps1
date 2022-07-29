@@ -17,12 +17,13 @@ And at the end it will create an Azure File Share with a size of 6 GiB, if it no
 
 Filename:       Setup-Azure-Cloud-Shell.ps1
 Created:        30/07/2020
-Last modified:  28/02/2022
+Last modified:  29/07/2022
 Author:         Wim Matthyssen
-PowerShell:     Azure PowerShell
-Version:        Install latest Az modules
+Version:        2.0
+PowerShell:     PowerShell 5.1 and Azure PowerShell
+Requires:       PowerShell Az (v5.9.0) Module
 Action:         Change variables where needed to fit your needs
-Disclaimer:     This script is provided "As Is" with no warranties.
+Disclaimer:     This script is provided "As Is" with no warranties
 
 .EXAMPLE
 
@@ -41,8 +42,8 @@ https://wmatthyssen.com/2022/02/23/setup-azure-cloud-shell-with-azure-powershell
 ## Variables
 
 $spoke = "hub"
-$location = #<your region here> The used Azure public region. Example: "westeurope"
-$purpose = "cloudshell"
+$region = #<your region here> The used Azure public region. Example: "westeurope"
+$purpose = "CloudShell"
 
 $rgStorageSpoke = #<your Azure Cloud Shell rg here> The new Azure resource group in which the new Cloud Shell resources will be created. Example: "rg-hub-myh-storage-01""
 $cloudShellStorageAccount = #<your storage account name here> The name of the storage account used by Cloud Shell  Example: "stlrshubmyhcs"
@@ -53,12 +54,14 @@ $storageMinimumTlsVersion = "TLS1_2"
 $fileShareAccessTier = "TransactionOptimized"
 $fileShareQuotaGiB = 6 
 
-$tagSpokeName = #<your environment tag name here> The environment tag name you want to use. Example:"env"
-$tagCostCenterName  = #<your costCenter tag name here> The costCenter tag name you want to use. Example:"costCenter"
-$tagCostCenterValue = #<your costCenter tag value here> The costCenter tag value you want to use. Example: "it"
-$tagBusinessCriticalityName = #<your businessCriticality tag name here> The businessCriticality tag name you want to use. Example:"businessCriticality"
-$tagBusinessCriticalityValue = #<your businessCriticality tag value here> The businessCriticality tag value you want to use. Example: "critical"
-$tagPurposeName  = #<your purpose tag name here> The purpose tag name you want to use. Example:"purpose"
+$tagSpokeName = #<your environment tag name here> The environment tag name you want to use. Example:"Env"
+$tagSpokeValue = "$($spoke[0].ToString().ToUpper())$($spoke.SubString(1))"
+$tagCostCenterName  = #<your costCenter tag name here> The costCenter tag name you want to use. Example:"CostCenter"
+$tagCostCenterValue = #<your costCenter tag value here> The costCenter tag value you want to use. Example: "23"
+$tagCriticalityName = #<your businessCriticality tag name here> The businessCriticality tag name you want to use. Example:"Criticality"
+$tagCriticalityValue = #<your businessCriticality tag value here> The businessCriticality tag value you want to use. Example: "High"
+$tagPurposeName  = #<your purpose tag name here> The purpose tag name you want to use. Example:"Purpose"
+$tagPurposeValue = $purpose
 
 $global:currenttime= Set-PSBreakpoint -Variable currenttime -Mode Read -Action {$global:currenttime= Get-Date -UFormat "%A %m/%d/%Y %R"}
 $foregroundColor1 = "Red"
@@ -73,17 +76,17 @@ $writeSeperatorSpaces = " - "
 $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
 $isAdministrator = $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 
-# Check if running as Administrator, otherwise exit the script
+## Check if running PowerShell as Administrator, otherwise exit the script
 if ($isAdministrator -eq $false) {
     Write-Host ($writeEmptyLine + "# Please run PowerShell as Administrator" + $writeSeperatorSpaces + $currentTime)`
     -foregroundcolor $foregroundColor1 $writeEmptyLine
     Start-Sleep -s 3
     exit
 } else {
-    # If running as Administrator, start script execution    
-    Write-Host ($writeEmptyLine + "# Script started. Without any errors, it will need around 2 minutes to complete" + $writeSeperatorSpaces + $currentTime)`
+    ## If running as Administrator, start script execution    
+    Write-Host ($writeEmptyLine + "# Script started. Without any errors, it will need around 1 minute to complete" + $writeSeperatorSpaces + $currentTime)`
     -foregroundcolor $foregroundColor1 $writeEmptyLine 
-}
+    }
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -93,12 +96,12 @@ Set-Item Env:\SuppressAzurePowerShellBreakingChangeWarnings "true"
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Change the current context to use the management subscription
+## Change the current context to use the Management subscription
 
-$subNameManagement = Get-AzSubscription | Where-Object {$_.Name -like "*management*"}
-$tenant = Get-AzTenant #current tenant
+$subNameTest = Get-AzSubscription | Where-Object {$_.Name -like "*management*"}
+$tenant = Get-AzTenant | Where-Object {$_.Name -like "*$companyShortName*"}
 
-Set-AzContext -TenantId $tenant.TenantId -SubscriptionId $subNameManagement.SubscriptionId | Out-Null 
+Set-AzContext -TenantId $tenant.TenantId -SubscriptionId $subNameTest.SubscriptionId | Out-Null 
 
 Write-Host ($writeEmptyLine + "# Management Subscription in current tenant selected" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
@@ -107,7 +110,7 @@ Write-Host ($writeEmptyLine + "# Management Subscription in current tenant selec
 
 ## Store the specified set of tags in a hash table
 
-$tags = @{$tagSpokeName=$spoke;$tagCostCenterName=$tagCostCenterValue;$tagBusinessCriticalityName=$tagBusinessCriticalityValue}
+$tags = @{$tagSpokeName=$tagSpokeValue;$tagCostCenterName=$tagCostCenterValue;$tagCriticalityName=$tagCriticalityValue;$tagPurposeName=$tagPurposeValue}
 
 Write-Host ($writeEmptyLine + "# Specified set of tags available to add" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine 
@@ -119,16 +122,11 @@ Write-Host ($writeEmptyLine + "# Specified set of tags available to add" + $writ
 try {
     Get-AzResourceGroup -Name $rgStorageSpoke -ErrorAction Stop | Out-Null 
 } catch {
-    New-AzResourceGroup -Name $rgStorageSpoke -Location $location -Force | Out-Null 
+    New-AzResourceGroup -Name $rgStorageSpoke -Location $region -Force | Out-Null 
 }
 
 # Set tags rg storage
 Set-AzResourceGroup -Name $rgStorageSpoke -Tag $tags | Out-Null
-
-# Add purpose tag rg storage
-$storeTags = (Get-AzResourceGroup -Name $rgStorageSpoke).Tags
-$storeTags += @{$tagPurposeName ="storage"}
-Set-AzResourceGroup -Name $rgStorageSpoke -Tag $storeTags | Out-Null
 
 Write-Host ($writeEmptyLine + "# Resource group $rgStorageSpoke available" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
@@ -140,17 +138,12 @@ Write-Host ($writeEmptyLine + "# Resource group $rgStorageSpoke available" + $wr
 try {
     Get-AzStorageAccount -ResourceGroupName $rgStorageSpoke -Name $cloudShellStorageAccount -ErrorAction Stop | Out-Null 
 } catch {
-    New-AzStorageAccount -ResourceGroupName $rgStorageSpoke -Name $cloudShellStorageAccount -SkuName $storageSKUNameStandardLRS -Location $location -Kind $storageAccountType `
+    New-AzStorageAccount -ResourceGroupName $rgStorageSpoke -Name $cloudShellStorageAccount -SkuName $storageSKUNameStandardLRS -Location $region -Kind $storageAccountType `
     -AllowBlobPublicAccess $false -MinimumTlsVersion $storageMinimumTlsVersion | Out-Null 
 }
 
 # Set tags storage account
 Set-AzStorageAccount -ResourceGroupName $rgStorageSpoke -Name $cloudShellStorageAccount -Tag $tags | Out-Null
-
-# Add purpose tag storage account
-$storeTags = (Get-AzStorageAccount -ResourceGroupName $rgStorageSpoke -Name $cloudShellStorageAccount).Tags
-$storeTags += @{$tagPurposeName=$purpose}
-Set-AzStorageAccount -ResourceGroupName $rgStorageSpoke -Name $cloudShellStorageAccount -Tag $storeTags | Out-Null
 
 Write-Host ($writeEmptyLine + "# Storage account $cloudShellStorageAccount created" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
@@ -159,22 +152,19 @@ Write-Host ($writeEmptyLine + "# Storage account $cloudShellStorageAccount creat
 
 ## Create an Azure file share for Cloud Shell if it not exists
 
+$fileShareName = "$($purpose.ToString().ToLower())"
+
 try {
-    Get-AzRmStorageShare -ResourceGroupName $rgStorageSpoke -StorageAccountName $cloudShellStorageAccount -Name $purpose -ErrorAction Stop | Out-Null 
+    Get-AzRmStorageShare -ResourceGroupName $rgStorageSpoke -StorageAccountName $cloudShellStorageAccount -Name $fileShareName -ErrorAction Stop | Out-Null 
 } catch {
-    New-AzRmStorageShare -ResourceGroupName $rgStorageSpoke -StorageAccountName $cloudShellStorageAccount -Name $purpose -AccessTier $fileShareAccessTier `
+    New-AzRmStorageShare -ResourceGroupName $rgStorageSpoke -StorageAccountName $cloudShellStorageAccount -Name $fileShareName -AccessTier $fileShareAccessTier `
     -QuotaGiB $fileShareQuotaGiB | Out-Null 
 }
 
 # Set Metadata file share
-Update-AzRmStorageShare -ResourceGroupName $rgStorageSpoke -StorageAccountName $cloudShellStorageAccount -Name $purpose -Metadata  $tags | Out-Null
+Update-AzRmStorageShare -ResourceGroupName $rgStorageSpoke -StorageAccountName $cloudShellStorageAccount -Name $fileShareName -Metadata $tags | Out-Null
 
-# Add purpose metadata file share
-$storeTags = (Get-AzRmStorageShare -ResourceGroupName $rgStorageSpoke -StorageAccountName $cloudShellStorageAccount -Name $purpose).Metadata
-$storeTags += @{$tagPurposeName=$purpose}
-Update-AzRmStorageShare -ResourceGroupName $rgStorageSpoke -StorageAccountName $cloudShellStorageAccount -Name $purpose -Metadata $storeTags | Out-Null
-
-Write-Host ($writeEmptyLine + "# Azure file share $purpose created" + $writeSeperatorSpaces + $currentTime)`
+Write-Host ($writeEmptyLine + "# Azure file share $fileShareName created" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
