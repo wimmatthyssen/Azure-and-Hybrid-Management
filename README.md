@@ -24,3 +24,8 @@ Currently this repository holds the following scritps:
 - **Setup-Azure-Cloud-Shell.ps1**
 
   More information about this script used to setup Azure Cloud Shell in an Azure environment can be found on my blog: https://wmatthyssen.com/2022/02/23/setup-azure-cloud-shell-with-azure-powershell/ 
+  
+ - **Create-Log-Analytics-workspace-management-subscription.ps1**
+
+  More information about this script used to create a Log Analytics workspace with enabled solutions in the Management subscription can be found on my blog: https://wmatthyssen.com/2022/02/23/setup-azure-cloud-shell-with-azure-powershell/ 
+
