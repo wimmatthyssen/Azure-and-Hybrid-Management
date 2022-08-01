@@ -45,6 +45,7 @@ Connect-AzAccount
 ## Variables
 
 $spoke = "hub"
+$abbraviationManagement = "management"
 $region = #<your region here> The used Azure public region. Example: "westeurope"
 
 $rgManagementHub = #<your Management rg here> The Azure resource group in which the new Log Analytics resources will be created. Example: "rg-hub-myh-management-01"
@@ -59,7 +60,7 @@ $tagCostCenterValue = #<your costCenter tag value here> The costCenter tag value
 $tagCriticalityName = #<your businessCriticality tag name here> The businessCriticality tag name you want to use. Example:"Criticality"
 $tagCriticalityValue = #<your businessCriticality tag value here> The businessCriticality tag value you want to use. Example: "High"
 $tagPurposeName  = #<your purpose tag name here> The purpose tag name you want to use. Example:"Purpose"
-$tagPurposeValue = #<your purpose tag value here> The purpose tag value you want to use. Example:"Management"
+$tagPurposeValue = "$($abbraviationManagement[0].ToString().ToUpper())$($abbraviationManagement.SubString(1))"
 
 $global:currenttime= Set-PSBreakpoint -Variable currenttime -Mode Read -Action {$global:currenttime= Get-Date -UFormat "%A %m/%d/%Y %R"}
 $foregroundColor1 = "Red"
