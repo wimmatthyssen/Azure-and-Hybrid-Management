@@ -27,7 +27,7 @@ Currently this repository holds the following scritps:
   
  - **Create-Log-Analytics-workspace-management-subscription.ps1**
 
-  More information about this script used to create a Log Analytics workspce with enabled solutions in the Management subscription can be found on my blog: https://wmatthyssen.com/2022/02/23/setup-azure-cloud-shell-with-azure-powershell/
+  More information about this script used to create a Log Analytics workspace with enabled solutions can be found on my blog: https://wmatthyssen.com/2022/02/23/setup-azure-cloud-shell-with-azure-powershell/
 
 
 
