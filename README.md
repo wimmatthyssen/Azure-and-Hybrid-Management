@@ -29,3 +29,5 @@ Currently this repository holds the following scritps:
 
   More information about this script used to create a Log Analytics workspce with enabled solutions in the Management subscription can be found on my blog: https://wmatthyssen.com/2022/02/23/setup-azure-cloud-shell-with-azure-powershell/ 
 
+
+
