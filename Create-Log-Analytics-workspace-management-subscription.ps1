@@ -197,8 +197,9 @@ $workSpace = Get-AzOperationalInsightsWorkspace -Name $lawWorkSpaceName -Resourc
 
 # Deprecated solution -> KeyVault
 # Deprecated solution -> AzureNetworking
+# Deprecated solution -> Backup
 
-$lawSolutions = "Security", "SecurityInsights", "AgentHealthAssessment", "AzureActivity", "SecurityCenterFree", "Backup", "DnsAnalytics", "ADAssessment", "AntiMalware", "ServiceMap", `
+$lawSolutions = "Security", "SecurityInsights", "AgentHealthAssessment", "AzureActivity", "SecurityCenterFree", "DnsAnalytics", "ADAssessment", "AntiMalware", "ServiceMap", `
 "SQLAssessment", "SQLVulnerabilityAssessment", "SQLAdvancedThreatProtection", "AzureAutomation", "Containers", "ChangeTracking", "Updates", "VMInsights"
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
