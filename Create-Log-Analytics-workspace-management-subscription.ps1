@@ -199,7 +199,7 @@ $workSpace = Get-AzOperationalInsightsWorkspace -Name $lawWorkSpaceName -Resourc
 # Deprecated solution -> AzureNetworking
 
 $lawSolutions = "Security", "SecurityInsights", "AgentHealthAssessment", "AzureActivity", "SecurityCenterFree", "Backup", "DnsAnalytics", "ADAssessment", "AntiMalware", "ServiceMap", `
-"SQLAssessment", "SQLVulnerabilityAssessment", "SQLAdvancedThreatProtection", "AzureAutomation", "Container", "ChangeTracking", "Updates", "VMInsights"
+"SQLAssessment", "SQLVulnerabilityAssessment", "SQLAdvancedThreatProtection", "AzureAutomation", "Containers", "ChangeTracking", "Updates", "VMInsights"
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
