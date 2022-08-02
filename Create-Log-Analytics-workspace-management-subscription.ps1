@@ -195,8 +195,11 @@ $workSpace = Get-AzOperationalInsightsWorkspace -Name $lawWorkSpaceName -Resourc
 # Optional solution -> Updates (also automatically installed by Azure Automation Updating Solution)
 # Optional solution -> VMInsights (also automatically installed by linking the Log Analytics workspace with VM Insights)
 
-$lawSolutions = "Security", "SecurityInsights", "AgentHealthAssessment", "AzureActivity", "SecurityCenterFree", "Backup", "AzureNetworking", "DnsAnalytics", "KeyVault", "ADAssessment", `
-"AntiMalware", "SQLAssessment", "SQLVulnerabilityAssessment", "SQLAdvancedThreatProtection", "AzureAutomation", "ServiceMap", "Container", "ChangeTracking", "Updates", "VMInsights"
+# Deprecated solution -> KeyVault
+# Deprecated solution -> AzureNetworking
+
+$lawSolutions = "Security", "SecurityInsights", "AgentHealthAssessment", "AzureActivity", "SecurityCenterFree", "Backup", "DnsAnalytics", "ADAssessment", "AntiMalware", "ServiceMap", `
+"SQLAssessment", "SQLVulnerabilityAssessment", "SQLAdvancedThreatProtection", "AzureAutomation", "Container", "ChangeTracking", "Updates", "VMInsights"
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
