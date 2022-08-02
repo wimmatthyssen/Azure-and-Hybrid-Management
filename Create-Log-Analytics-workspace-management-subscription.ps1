@@ -191,8 +191,12 @@ $workSpace = Get-AzOperationalInsightsWorkspace -Name $lawWorkSpaceName -Resourc
 
 ## Store the list of solutions to enable in a variable for later use
 
-$lawSolutions = "Security", "SecurityInsights", "AgentHealthAssessment", "AzureActivity", "ChangeTracking", "Updates", "SecurityCenterFree", "VMInsights", "Backup", "AzureNetworking", `
-"KeyVault", "ADAssessment", "SQLAssessment", "SQLVulnerabilityAssessment", "SQLAdvancedThreatProtection", "AzureAutomation", "ServiceMap", "AntiMalware"
+# Optional solution -> ChangeTracking (also automatically installed by Azure Automation)
+# Optional solution -> Updates (also automatically installed by Azure Automation Updating Solution)
+# Optional solution -> VMInsights (also automatically installed by linking the Log Analytics workspace with VM Insights)
+
+$lawSolutions = "Security", "SecurityInsights", "AgentHealthAssessment", "AzureActivity", "SecurityCenterFree", "Backup", "AzureNetworking", "DnsAnalytics", "KeyVault", "ADAssessment", `
+"AntiMalware", "SQLAssessment", "SQLVulnerabilityAssessment", "SQLAdvancedThreatProtection", "AzureAutomation", "ServiceMap", "Container", "ChangeTracking", "Updates", "VMInsights"
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -207,7 +211,7 @@ Write-Host ($writeEmptyLine + "# Solutions added to $lawWorkSpaceName" + $writeS
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Get all monitor log analytics solutions under the Log Analytics workspace resource group
+## List all monitor log analytics solutions under the Log Analytics workspace resource group
 
 # Get-AzMonitorLogAnalyticsSolution -ResourceGroupName $rgManagementHub
 
