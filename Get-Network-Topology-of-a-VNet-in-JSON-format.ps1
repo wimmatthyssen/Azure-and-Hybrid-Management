@@ -31,7 +31,7 @@ Get-AzSubscription -SubscriptionId <"your Azure Subscirption ID here"> -TenantId
 
 .LINK
 
-
+https://wmatthyssen.com/2022/08/09/azure-tip-use-azure-network-watcher-to-view-or-download-the-network-topology-of-a-vnet/
 #>
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
