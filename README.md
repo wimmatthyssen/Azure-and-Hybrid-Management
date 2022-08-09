@@ -31,6 +31,6 @@ Currently this repository holds the following scritps:
 
  - **Get-Network-Topology-of-a-VNet-in-JSON-format.ps1**
 
-  More information about this script used to get a network topology of a VNet in a JSON output can be found on my blog: https://wmatthyssen.com/2022/02/23/setup-azure-cloud-shell-with-azure-powershell/
+  More information about this script used to get a network topology of a VNet in a JSON output can be found on my blog: 
 
 
