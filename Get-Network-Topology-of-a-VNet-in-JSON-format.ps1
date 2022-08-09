@@ -6,7 +6,7 @@ An Azure PowerShell script used to get the network topology of a VNet in a JSON 
 .DESCRIPTION
 
 An Azure PowerShell script used to get the network topology of a VNet in a JSON output.
-It will give you a network level view of all networking resources and their relationships from a specific resource group.
+This output will give you a network level view of all networking resources and their relationships from a specific resource group.
 If resources from multiple regions reside in the resource group, only the resources in the same region as the Network Watcher will be included in the JSON output.
 
 .NOTES
