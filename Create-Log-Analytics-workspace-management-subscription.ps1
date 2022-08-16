@@ -186,7 +186,7 @@ Write-Host ($writeEmptyLine + "# Log Analytics workspace variable created" + $wr
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-##  List all solutions and their installation status
+## List all solutions and their installation status
 
 # Get-AzOperationalInsightsIntelligencePack -ResourceGroupName $rgLawWorkspaceName -Name $lawWorkSpaceName
 
