@@ -10,7 +10,7 @@ The script will do all of the following:
 
 Check if the PowerShell window is running as Administrator (when not running from Cloud Shell), otherwise the Azure PowerShell script will be exited.
 Suppress breaking change warning messages.
-Change the current context to use a management subscription (a subscription with *management* in the Subscription name will be automatically selected).
+Change the current context to use a management subscription (a subscription with *management* in the subscription name will be automatically selected).
 Store a specified set of tags in a hash table.
 Create a resource group for Log Analytics if it does not exist. Add specified tags and lock with a CanNotDelete lock.
 Create the Log Analytics workspace if it does not exist and add the specified tags.
@@ -107,7 +107,7 @@ Set-Item Env:\SuppressAzurePowerShellBreakingChangeWarnings "true"
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Change the current context to use the Management subscription
+## Change the current context to use a management subscription
 
 $subNameManagement = Get-AzSubscription | Where-Object {$_.Name -like "*management*"}
 $tenant = Get-AzTenant | Where-Object {$_.Name -like "*$companyShortName*"}
