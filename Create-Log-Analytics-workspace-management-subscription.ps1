@@ -216,7 +216,7 @@ foreach ($solution in $lawSolutions) {
     New-AzMonitorLogAnalyticsSolution -Type $solution -ResourceGroupName $rgLawWorkspaceName -Location $workSpace.Location -WorkspaceResourceId $workSpace.ResourceId | Out-Null
 }
 
-Write-Host ($writeEmptyLine + "# Solutions added to $lawWorkSpaceName" + $writeSeperatorSpaces + $currentTime)`
+Write-Host ($writeEmptyLine + "# Solutions added to Log Analytics workspace $lawWorkSpaceName" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
