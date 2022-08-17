@@ -50,7 +50,7 @@ $region = #<your region here> The used Azure public region. Example: "westeurope
 $purpose = "CloudShell"
 
 $rgNameStorage = #<your Azure Cloud Shell rg here> The new Azure resource group in which the new Cloud Shell resources will be created. Example: "rg-hub-myh-storage-01"
-$cloudShellStorageAccountName = #<your storage account name here> The name of the storage account used by Cloud Shell. Example: "sthubmyhcs"
+$cloudShellStorageAccountName = #<your storage account name here> The name of the storage account used by Cloud Shell. Example: "sthubmyhcs01"
 $storageAccountSkuName = "Standard_LRS"
 $storageAccountType = "StorageV2"
 $storageMinimumTlsVersion = "TLS1_2"
