@@ -47,7 +47,7 @@ $region = #<your region here> The used Azure public region. Example: "westeurope
 $purpose = "CloudShell"
 
 $rgStorageName = #<your Azure Cloud Shell rg here> The new Azure resource group in which the new Cloud Shell resources will be created. Example: "rg-hub-myh-storage-01""
-$cloudShellStorageAccount = #<your storage account name here> The name of the storage account used by Cloud Shell. Example: "stlrshubmyhcs"
+$cloudShellStorageAccountName = #<your storage account name here> The name of the storage account used by Cloud Shell. Example: "stlrshubmyhcs"
 $storageSkuNameStandardLrs = "Standard_LRS"
 $storageAccountType = "StorageV2"
 $storageMinimumTlsVersion = "TLS1_2"
@@ -137,16 +137,16 @@ Write-Host ($writeEmptyLine + "# Resource group $rgStorageName available" + $wri
 ## Create a storage account for Cloud Shell if it not exists
 
 try {
-    Get-AzStorageAccount -ResourceGroupName $rgStorageName -Name $cloudShellStorageAccount -ErrorAction Stop | Out-Null 
+    Get-AzStorageAccount -ResourceGroupName $rgStorageName -Name $cloudShellStorageAccountName -ErrorAction Stop | Out-Null 
 } catch {
-    New-AzStorageAccount -ResourceGroupName $rgStorageName -Name $cloudShellStorageAccount -SkuName $storageSKUNameStandardLRS -Location $region -Kind $storageAccountType `
+    New-AzStorageAccount -ResourceGroupName $rgStorageName -Name $cloudShellStorageAccountName -SkuName $storageSKUNameStandardLRS -Location $region -Kind $storageAccountType `
     -AllowBlobPublicAccess $false -MinimumTlsVersion $storageMinimumTlsVersion | Out-Null 
 }
 
 # Set tags storage account
-Set-AzStorageAccount -ResourceGroupName $rgStorageName -Name $cloudShellStorageAccount -Tag $tags | Out-Null
+Set-AzStorageAccount -ResourceGroupName $rgStorageName -Name $cloudShellStorageAccountName -Tag $tags | Out-Null
 
-Write-Host ($writeEmptyLine + "# Storage account $cloudShellStorageAccount created" + $writeSeperatorSpaces + $currentTime)`
+Write-Host ($writeEmptyLine + "# Storage account $cloudShellStorageAccountName created" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -156,14 +156,14 @@ Write-Host ($writeEmptyLine + "# Storage account $cloudShellStorageAccount creat
 $fileShareName = "$($purpose.ToString().ToLower())"
 
 try {
-    Get-AzRmStorageShare -ResourceGroupName $rgStorageName -StorageAccountName $cloudShellStorageAccount -Name $fileShareName -ErrorAction Stop | Out-Null 
+    Get-AzRmStorageShare -ResourceGroupName $rgStorageName -StorageAccountName $cloudShellStorageAccountName -Name $fileShareName -ErrorAction Stop | Out-Null 
 } catch {
-    New-AzRmStorageShare -ResourceGroupName $rgStorageName -StorageAccountName $cloudShellStorageAccount -Name $fileShareName -AccessTier $fileShareAccessTier `
+    New-AzRmStorageShare -ResourceGroupName $rgStorageName -StorageAccountName $cloudShellStorageAccountName -Name $fileShareName -AccessTier $fileShareAccessTier `
     -QuotaGiB $fileShareQuotaGiB | Out-Null 
 }
 
 # Set Metadata file share
-Update-AzRmStorageShare -ResourceGroupName $rgStorageName -StorageAccountName $cloudShellStorageAccount -Name $fileShareName -Metadata $tags | Out-Null
+Update-AzRmStorageShare -ResourceGroupName $rgStorageName -StorageAccountName $cloudShellStorageAccountName -Name $fileShareName -Metadata $tags | Out-Null
 
 Write-Host ($writeEmptyLine + "# Azure file share $fileShareName created" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
