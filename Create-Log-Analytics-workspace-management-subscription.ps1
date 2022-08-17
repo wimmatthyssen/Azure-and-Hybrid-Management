@@ -45,6 +45,7 @@ https://wmatthyssen.com/2022/08/01/azure-powershell-script-create-a-log-analytic
 
 ## Variables
 
+$companyShortName = #"<your company short name here>" The three letter abbreviation of your company name here. Example: "myh"
 $spoke = "hub"
 $abbraviationManagement = "management"
 $region = #<your region here> The used Azure public region. Example: "westeurope"
