@@ -155,7 +155,7 @@ Write-Host ($writeEmptyLine + "# Storage account $cloudShellStorageAccountName c
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Create an Azure file share for Cloud Shell if it not exists. Also apply the necessary meta data to this file share
+## Create an Azure file share for Cloud Shell if it does not exist. Also apply the necessary meta data to this file share
 
 $fileShareName = "$($purpose.ToString().ToLower())"
 
