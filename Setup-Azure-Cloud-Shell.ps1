@@ -20,7 +20,7 @@ Created:        30/07/2020
 Last modified:  29/07/2022
 Author:         Wim Matthyssen
 Version:        2.0
-PowerShell:     PowerShell 5.1 and Azure PowerShell
+PowerShell:     Azure PowerShell
 Requires:       PowerShell Az (v5.9.0) Module
 Action:         Change variables where needed to fit your needs
 Disclaimer:     This script is provided "As Is" with no warranties
@@ -45,7 +45,7 @@ $spoke = "hub"
 $region = #<your region here> The used Azure public region. Example: "westeurope"
 $purpose = "CloudShell"
 
-$rgStorageSpoke = #<your Azure Cloud Shell rg here> The new Azure resource group in which the new Cloud Shell resources will be created. Example: "rg-hub-myh-storage-01""
+$rgStorageName = #<your Azure Cloud Shell rg here> The new Azure resource group in which the new Cloud Shell resources will be created. Example: "rg-hub-myh-storage-01""
 $cloudShellStorageAccount = #<your storage account name here> The name of the storage account used by Cloud Shell  Example: "stlrshubmyhcs"
 $storageSkuNameStandardLrs = "Standard_LRS"
 $storageAccountType = "StorageV2"
@@ -96,14 +96,14 @@ Set-Item Env:\SuppressAzurePowerShellBreakingChangeWarnings "true"
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Change the current context to use the Management subscription
+## Change the current context to use a management subscription
 
 $subNameTest = Get-AzSubscription | Where-Object {$_.Name -like "*management*"}
 $tenant = Get-AzTenant | Where-Object {$_.Name -like "*$companyShortName*"}
 
 Set-AzContext -TenantId $tenant.TenantId -SubscriptionId $subNameTest.SubscriptionId | Out-Null 
 
-Write-Host ($writeEmptyLine + "# Management Subscription in current tenant selected" + $writeSeperatorSpaces + $currentTime)`
+Write-Host ($writeEmptyLine + "# Management subscription in current tenant selected" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -120,15 +120,15 @@ Write-Host ($writeEmptyLine + "# Specified set of tags available to add" + $writ
 ## Create a dedicated resource group for Azure storage resources in the hub (also holds the Cloud Shell Azure Files share) if it not exists  
 
 try {
-    Get-AzResourceGroup -Name $rgStorageSpoke -ErrorAction Stop | Out-Null 
+    Get-AzResourceGroup -Name $rgStorageName -ErrorAction Stop | Out-Null 
 } catch {
-    New-AzResourceGroup -Name $rgStorageSpoke -Location $region -Force | Out-Null 
+    New-AzResourceGroup -Name $rgStorageName -Location $region -Force | Out-Null 
 }
 
 # Set tags rg storage
-Set-AzResourceGroup -Name $rgStorageSpoke -Tag $tags | Out-Null
+Set-AzResourceGroup -Name $rgStorageName -Tag $tags | Out-Null
 
-Write-Host ($writeEmptyLine + "# Resource group $rgStorageSpoke available" + $writeSeperatorSpaces + $currentTime)`
+Write-Host ($writeEmptyLine + "# Resource group $rgStorageName available" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -136,14 +136,14 @@ Write-Host ($writeEmptyLine + "# Resource group $rgStorageSpoke available" + $wr
 ## Create a storage account for Cloud Shell if it not exists
 
 try {
-    Get-AzStorageAccount -ResourceGroupName $rgStorageSpoke -Name $cloudShellStorageAccount -ErrorAction Stop | Out-Null 
+    Get-AzStorageAccount -ResourceGroupName $rgStorageName -Name $cloudShellStorageAccount -ErrorAction Stop | Out-Null 
 } catch {
-    New-AzStorageAccount -ResourceGroupName $rgStorageSpoke -Name $cloudShellStorageAccount -SkuName $storageSKUNameStandardLRS -Location $region -Kind $storageAccountType `
+    New-AzStorageAccount -ResourceGroupName $rgStorageName -Name $cloudShellStorageAccount -SkuName $storageSKUNameStandardLRS -Location $region -Kind $storageAccountType `
     -AllowBlobPublicAccess $false -MinimumTlsVersion $storageMinimumTlsVersion | Out-Null 
 }
 
 # Set tags storage account
-Set-AzStorageAccount -ResourceGroupName $rgStorageSpoke -Name $cloudShellStorageAccount -Tag $tags | Out-Null
+Set-AzStorageAccount -ResourceGroupName $rgStorageName -Name $cloudShellStorageAccount -Tag $tags | Out-Null
 
 Write-Host ($writeEmptyLine + "# Storage account $cloudShellStorageAccount created" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
@@ -155,14 +155,14 @@ Write-Host ($writeEmptyLine + "# Storage account $cloudShellStorageAccount creat
 $fileShareName = "$($purpose.ToString().ToLower())"
 
 try {
-    Get-AzRmStorageShare -ResourceGroupName $rgStorageSpoke -StorageAccountName $cloudShellStorageAccount -Name $fileShareName -ErrorAction Stop | Out-Null 
+    Get-AzRmStorageShare -ResourceGroupName $rgStorageName -StorageAccountName $cloudShellStorageAccount -Name $fileShareName -ErrorAction Stop | Out-Null 
 } catch {
-    New-AzRmStorageShare -ResourceGroupName $rgStorageSpoke -StorageAccountName $cloudShellStorageAccount -Name $fileShareName -AccessTier $fileShareAccessTier `
+    New-AzRmStorageShare -ResourceGroupName $rgStorageName -StorageAccountName $cloudShellStorageAccount -Name $fileShareName -AccessTier $fileShareAccessTier `
     -QuotaGiB $fileShareQuotaGiB | Out-Null 
 }
 
 # Set Metadata file share
-Update-AzRmStorageShare -ResourceGroupName $rgStorageSpoke -StorageAccountName $cloudShellStorageAccount -Name $fileShareName -Metadata $tags | Out-Null
+Update-AzRmStorageShare -ResourceGroupName $rgStorageName -StorageAccountName $cloudShellStorageAccount -Name $fileShareName -Metadata $tags | Out-Null
 
 Write-Host ($writeEmptyLine + "# Azure file share $fileShareName created" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
