@@ -115,7 +115,7 @@ Write-Host ($writeEmptyLine + "# Management subscription in current tenant selec
 
 ## Store the specified set of tags in a hash table
 
-$tags = @{$tagSpokeName=$tagSpokeValue;$tagCostCenterName=$tagCostCenterValue;$tagCriticalityName=$tagCriticalityValue;$tagPurposeName=$tagPurposeValue;$tagSkuName=$tagSkuValue}
+$tags = @{$tagSpokeName=$tagSpokeValue;$tagCostCenterName=$tagCostCenterValue;$tagCriticalityName=$tagCriticalityValue;$tagPurposeName=$tagPurposeValue}
 
 Write-Host ($writeEmptyLine + "# Specified set of tags available to add" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine 
@@ -146,6 +146,9 @@ try {
     New-AzStorageAccount -ResourceGroupName $rgNameStorage -Name $cloudShellStorageAccountName -SkuName $storageAccountSkuName -Location $region -Kind $storageAccountType `
     -AllowBlobPublicAccess $false -MinimumTlsVersion $storageMinimumTlsVersion | Out-Null 
 }
+
+# Add Sku tag to tags
+$tags += @{$tagSkuName=$tagSkuValue}
 
 # Set tags storage account
 Set-AzStorageAccount -ResourceGroupName $rgNameStorage -Name $cloudShellStorageAccountName -Tag $tags | Out-Null
