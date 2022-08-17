@@ -10,7 +10,7 @@ The script will do all of the following:
 
 Check if the PowerShell window is running as Administrator (when not running from Cloud Shell), otherwise the Azure PowerShell script will be exited.
 Suppress breaking change warning messages.
-Change the current context to use a management subscription (a subscription with *management* in the subscription name will be automatically selected).
+Change the current context to use a management subscription (a subscription with *management* in the Subscription name will be automatically selected).
 Store a specified set of tags in a hash table.
 Create a resource group for Log Analytics if it does not exist. Add specified tags and lock with a CanNotDelete lock.
 Create the Log Analytics workspace if it does not exist and add the specified tags.
@@ -49,10 +49,10 @@ $spoke = "hub"
 $abbraviationManagement = "management"
 $region = #<your region here> The used Azure public region. Example: "westeurope"
 
-$rgLawWorkspaceName = #<your Log Analytics rg name here> The name of the resource group in which the new Log Analytics resources will be created. Example: "rg-hub-myh-management-01"
-$lawWorkSpaceName = #<your Log Analytics workspace name here> The name for your Log Analytics workspace. Example: "law-hub-myh-01"
-$lawSku = "pergb2018"
-$lawDiagnosticsName = #<your Log Analytics Diagnostics settings name here> The name of the new diagnostic settings for your Log Analytics workspace. Example: "diag-law-hub-myh-01"
+$rgLogAnalyticsWorkspaceName = #<your Log Analytics rg name here> The name of the resource group in which the new Log Analytics resources will be created. Example: "rg-hub-myh-management-01"
+$LogAnalyticsWorkspaceName = #<your Log Analytics workspace name here> The name for your Log Analytics workspace. Example: "law-hub-myh-01"
+$LogAnalyticsWorkspaceSku = "pergb2018"
+$LogAnalyticsDiagnosticsName = #<your Log Analytics Diagnostics settings name here> The name of the new diagnostic settings for your Log Analytics workspace. Example: "diag-law-hub-myh-01"
 
 $tagSpokeName = #<your environment tag name here> The environment tag name you want to use. Example:"Env"
 $tagSpokeValue = "$($spoke[0].ToString().ToUpper())$($spoke.SubString(1))"
@@ -131,27 +131,27 @@ Write-Host ($writeEmptyLine + "# Specified set of tags available to add" + $writ
 ## Create a resource group for Log Analytics if it does not exist. Add specified tags and lock with a CanNotDelete lock
 
 try {
-    Get-AzResourceGroup -Name $rgLawWorkspaceName -ErrorAction Stop | Out-Null 
+    Get-AzResourceGroup -Name $rgLogAnalyticsWorkspaceName -ErrorAction Stop | Out-Null 
 } catch {
-    New-AzResourceGroup -Name $rgLawWorkspaceName -Location $region -Force | Out-Null
+    New-AzResourceGroup -Name $rgLogAnalyticsWorkspaceName -Location $region -Force | Out-Null
 }
 
 # Set tags Log Analytics resource group
-Set-AzResourceGroup -Name $rgLawWorkspaceName -Tag $tags | Out-Null
+Set-AzResourceGroup -Name $rgLogAnalyticsWorkspaceName -Tag $tags | Out-Null
 
 # Add purpose tag to the Log Analytics resource group
-$storeTags = (Get-AzResourceGroup -Name $rgLawWorkspaceName).Tags
+$storeTags = (Get-AzResourceGroup -Name $rgLogAnalyticsWorkspaceName).Tags
 $storeTags += @{$tagPurposeName = $tagPurposeValue}
-Set-AzResourceGroup -Name $rgLawWorkspaceName -Tag $storeTags | Out-Null
+Set-AzResourceGroup -Name $rgLogAnalyticsWorkspaceName -Tag $storeTags | Out-Null
 
 # Lock Log Analytics resource group with a CanNotDelete lock
-$lock = Get-AzResourceLock -ResourceGroupName $rgLawWorkspaceName
+$lock = Get-AzResourceLock -ResourceGroupName $rgLogAnalyticsWorkspaceName
 
 if ($null -eq $lock){
-    New-AzResourceLock -LockName DoNotDeleteLock -LockLevel CanNotDelete -ResourceGroupName $rgLawWorkspaceName -LockNotes "Prevent $rgLawWorkspaceName from deletion" -Force | Out-Null
+    New-AzResourceLock -LockName DoNotDeleteLock -LockLevel CanNotDelete -ResourceGroupName $rgLogAnalyticsWorkspaceName -LockNotes "Prevent $rgLogAnalyticsWorkspaceName from deletion" -Force | Out-Null
     }
 
-Write-Host ($writeEmptyLine + "# Resource group $rgLawWorkspaceName available with tags and CanNotDelete lock" + $writeSeperatorSpaces + $currentTime)`
+Write-Host ($writeEmptyLine + "# Resource group $rgLogAnalyticsWorkspaceName available with tags and CanNotDelete lock" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -159,27 +159,27 @@ Write-Host ($writeEmptyLine + "# Resource group $rgLawWorkspaceName available wi
 ## Create the Log Analytics workspace if it does not exist and add the specified tags
 
 try {
-    Get-AzOperationalInsightsWorkspace -Name $lawWorkSpaceName -ResourceGroupName $rgLawWorkspaceName -ErrorAction Stop | Out-Null 
+    Get-AzOperationalInsightsWorkspace -Name $LogAnalyticsWorkspaceName -ResourceGroupName $rgLogAnalyticsWorkspaceName -ErrorAction Stop | Out-Null 
 } catch {
-    New-AzOperationalInsightsWorkspace -ResourceGroupName $rgLawWorkspaceName -Name $lawWorkSpaceName -Location $region -Sku $lawSku -Force | Out-Null
+    New-AzOperationalInsightsWorkspace -ResourceGroupName $rgLogAnalyticsWorkspaceName -Name $LogAnalyticsWorkspaceName -Location $region -Sku $LogAnalyticsWorkspaceSku -Force | Out-Null
 }
 
 # Set tags Log Analytics workspace
-Set-AzOperationalInsightsWorkspace -ResourceGroupName $rgLawWorkspaceName -Name $lawWorkSpaceName -Tag $tags | Out-Null
+Set-AzOperationalInsightsWorkspace -ResourceGroupName $rgLogAnalyticsWorkspaceName -Name $LogAnalyticsWorkspaceName -Tag $tags | Out-Null
 
 # Add purpose tag Log Analytics workspace
-$storeTags = (Get-AzOperationalInsightsWorkspace -Name $lawWorkSpaceName -ResourceGroupName $rgLawWorkspaceName).Tags
+$storeTags = (Get-AzOperationalInsightsWorkspace -Name $LogAnalyticsWorkspaceName -ResourceGroupName $rgLogAnalyticsWorkspaceName).Tags
 $storeTags += @{$tagPurposeName = $tagPurposeValue}
-Set-AzOperationalInsightsWorkspace -ResourceGroupName $rgLawWorkspaceName -Name $lawWorkSpaceName -Tag $storeTags | Out-Null
+Set-AzOperationalInsightsWorkspace -ResourceGroupName $rgLogAnalyticsWorkspaceName -Name $LogAnalyticsWorkspaceName -Tag $storeTags | Out-Null
 
-Write-Host ($writeEmptyLine + "# Log Analytics workspace $lawWorkSpaceName created" + $writeSeperatorSpaces + $currentTime)`
+Write-Host ($writeEmptyLine + "# Log Analytics workspace $LogAnalyticsWorkspaceName created" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Save the Log Analytics workspace in a variable 
 
-$workSpace = Get-AzOperationalInsightsWorkspace -Name $lawWorkSpaceName -ResourceGroupName $rgLawWorkspaceName
+$workSpace = Get-AzOperationalInsightsWorkspace -Name $LogAnalyticsWorkspaceName -ResourceGroupName $rgLogAnalyticsWorkspaceName
 
 Write-Host ($writeEmptyLine + "# Log Analytics workspace variable created" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
@@ -188,7 +188,7 @@ Write-Host ($writeEmptyLine + "# Log Analytics workspace variable created" + $wr
 
 ## List all solutions and their installation status
 
-# Get-AzOperationalInsightsIntelligencePack -ResourceGroupName $rgLawWorkspaceName -Name $lawWorkSpaceName
+# Get-AzOperationalInsightsIntelligencePack -ResourceGroupName $rgLogAnalyticsWorkspaceName -Name $LogAnalyticsWorkspaceName
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -213,31 +213,31 @@ Write-Host ($writeEmptyLine + "# Solutions variable created" + $writeSeperatorSp
 ## Add the required solutions to the Log Analytics workspace
 
 foreach ($solution in $lawSolutions) {
-    New-AzMonitorLogAnalyticsSolution -Type $solution -ResourceGroupName $rgLawWorkspaceName -Location $workSpace.Location -WorkspaceResourceId $workSpace.ResourceId | Out-Null
+    New-AzMonitorLogAnalyticsSolution -Type $solution -ResourceGroupName $rgLogAnalyticsWorkspaceName -Location $workSpace.Location -WorkspaceResourceId $workSpace.ResourceId | Out-Null
 }
 
-Write-Host ($writeEmptyLine + "# Solutions added to Log Analytics workspace $lawWorkSpaceName" + $writeSeperatorSpaces + $currentTime)`
+Write-Host ($writeEmptyLine + "# Solutions added to Log Analytics workspace $LogAnalyticsWorkspaceName" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## List all monitor log analytics solutions under the Log Analytics workspace resource group
 
-# Get-AzMonitorLogAnalyticsSolution -ResourceGroupName $rgLawWorkspaceName
+# Get-AzMonitorLogAnalyticsSolution -ResourceGroupName $rgLogAnalyticsWorkspaceName
 
 ## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Set the log and metrics settings for the Log Analytics workspace if they don't exist
 
 try {
-    Get-AzDiagnosticSetting -Name $lawDiagnosticsName -ResourceId $workSpace.ResourceId -ErrorAction Stop | Out-Null
+    Get-AzDiagnosticSetting -Name $LogAnalyticsDiagnosticsName -ResourceId $workSpace.ResourceId -ErrorAction Stop | Out-Null
     
 } catch {
-    Set-AzDiagnosticSetting -Name $lawDiagnosticsName -ResourceId $workSpace.ResourceId -Category Audit -MetricCategory AllMetrics -Enabled $true `
+    Set-AzDiagnosticSetting -Name $LogAnalyticsDiagnosticsName -ResourceId $workSpace.ResourceId -Category Audit -MetricCategory AllMetrics -Enabled $true `
     -WorkspaceId ($workSpace.ResourceId) | Out-Null
 }
 
-Write-Host ($writeEmptyLine + "# Log Analytics workspace $lawWorkSpaceName diagnostic settings set" + $writeSeperatorSpaces + $currentTime)`
+Write-Host ($writeEmptyLine + "# Log Analytics workspace $LogAnalyticsWorkspaceName diagnostic settings set" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
 
 ## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
