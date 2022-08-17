@@ -58,15 +58,15 @@ $storageMinimumTlsVersion = "TLS1_2"
 $fileShareAccessTier = "TransactionOptimized"
 $fileShareQuotaGiB = 6 
 
-$tagSpokeName = #<your environment tag name here> The environment tag name you want to use. Example:"Env"
+$tagSpokeName = #<your environment tag name here> The environment tag name you want to use. Example: "Env"
 $tagSpokeValue = "$($spoke[0].ToString().ToUpper())$($spoke.SubString(1))"
-$tagCostCenterName = #<your costCenter tag name here> The costCenter tag name you want to use. Example:"CostCenter"
+$tagCostCenterName = #<your costCenter tag name here> The costCenter tag name you want to use. Example: "CostCenter"
 $tagCostCenterValue = #<your costCenter tag value here> The costCenter tag value you want to use. Example: "23"
-$tagCriticalityName = #<your businessCriticality tag name here> The businessCriticality tag name you want to use. Example:"Criticality"
-$tagCriticalityValue = #<your businessCriticality tag value here> The businessCriticality tag value you want to use. Example:"High"
-$tagPurposeName = #<your purpose tag name here> The purpose tag name you want to use. Example:"Purpose"
+$tagCriticalityName = #<your businessCriticality tag name here> The businessCriticality tag name you want to use. Example: "Criticality"
+$tagCriticalityValue = #<your businessCriticality tag value here> The businessCriticality tag value you want to use. Example: "High"
+$tagPurposeName = #<your purpose tag name here> The purpose tag name you want to use. Example: "Purpose"
 $tagPurposeValue = $purpose
-$tagSkuName = #<your SKU tag name here> The SKU tag name you want to use. Example:"Sku"
+$tagSkuName = #<your SKU tag name here> The SKU tag name you want to use. Example: "Sku"
 $tagSkuValue = $storageAccountSkuName
 
 $global:currenttime= Set-PSBreakpoint -Variable currenttime -Mode Read -Action {$global:currenttime= Get-Date -UFormat "%A %m/%d/%Y %R"}
