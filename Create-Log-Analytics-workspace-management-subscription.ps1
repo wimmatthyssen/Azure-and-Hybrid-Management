@@ -23,7 +23,7 @@ Set the log and metrics settings for the Log Analytics workspace, if they don't 
 
 Filename:       Create-Log-Analytics-workspace-management-subscription.ps1
 Created:        14/10/2021
-Last modified:  16/08/2022
+Last modified:  18/08/2022
 Author:         Wim Matthyssen
 Version:        2.1
 PowerShell:     Azure PowerShell and Azure Cloud Shell
@@ -34,6 +34,8 @@ Disclaimer:     This script is provided "As Is" with no warranties.
 .EXAMPLE
 
 Connect-AzAccount
+Get-AzTenant (if not using the default tenant)
+Set-AzContext -tenantID "xxxxxxxx-xxxx-xxxx-xxxxxxxxxxxx" (if not using the default tenant)
 .\Create-Log-Analytics-workspace-management-subscription.ps1
 
 .LINK
@@ -55,13 +57,13 @@ $LogAnalyticsWorkspaceName = #<your Log Analytics workspace name here> The name 
 $LogAnalyticsWorkspaceSku = "pergb2018"
 $LogAnalyticsDiagnosticsName = #<your Log Analytics Diagnostics settings name here> The name of the new diagnostic settings for your Log Analytics workspace. Example: "diag-law-hub-myh-01"
 
-$tagSpokeName = #<your environment tag name here> The environment tag name you want to use. Example:"Env"
+$tagSpokeName = #<your environment tag name here> The environment tag name you want to use. Example: "Env"
 $tagSpokeValue = "$($spoke[0].ToString().ToUpper())$($spoke.SubString(1))"
-$tagCostCenterName  = #<your costCenter tag name here> The costCenter tag name you want to use. Example:"CostCenter"
+$tagCostCenterName  = #<your costCenter tag name here> The costCenter tag name you want to use. Example: "CostCenter"
 $tagCostCenterValue = #<your costCenter tag value here> The costCenter tag value you want to use. Example: "23"
-$tagCriticalityName = #<your businessCriticality tag name here> The businessCriticality tag name you want to use. Example:"Criticality"
+$tagCriticalityName = #<your businessCriticality tag name here> The businessCriticality tag name you want to use. Example: "Criticality"
 $tagCriticalityValue = #<your businessCriticality tag value here> The businessCriticality tag value you want to use. Example: "High"
-$tagPurposeName  = #<your purpose tag name here> The purpose tag name you want to use. Example:"Purpose"
+$tagPurposeName  = #<your purpose tag name here> The purpose tag name you want to use. Example: "Purpose"
 $tagPurposeValue = "$($abbraviationManagement[0].ToString().ToUpper())$($abbraviationManagement.SubString(1))"
 
 $global:currenttime= Set-PSBreakpoint -Variable currenttime -Mode Read -Action {$global:currenttime= Get-Date -UFormat "%A %m/%d/%Y %R"}
@@ -111,9 +113,8 @@ Set-Item Env:\SuppressAzurePowerShellBreakingChangeWarnings "true"
 ## Change the current context to use a management subscription
 
 $subNameManagement = Get-AzSubscription | Where-Object {$_.Name -like "*management*"}
-$tenant = Get-AzTenant | Where-Object {$_.Name -like "*$companyShortName*"}
 
-Set-AzContext -TenantId $tenant.TenantId -SubscriptionId $subNameManagement.SubscriptionId | Out-Null 
+Set-AzContext -SubscriptionId $subNameManagement.SubscriptionId | Out-Null 
 
 Write-Host ($writeEmptyLine + "# Management subscription in current tenant selected" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
