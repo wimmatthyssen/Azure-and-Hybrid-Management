@@ -54,8 +54,8 @@ $region = #<your region here> The used Azure public region. Example: "westeurope
 
 $rgLogAnalyticsWorkspaceName = #<your Log Analytics rg name here> The name of the resource group in which the new Log Analytics resources will be created. Example: "rg-hub-myh-management-01"
 $LogAnalyticsWorkspaceName = #<your Log Analytics workspace name here> The name for your Log Analytics workspace. Example: "law-hub-myh-01"
-$LogAnalyticsWorkspaceSku = "pergb2018"
-$LogAnalyticsDiagnosticsName = #<your Log Analytics Diagnostics settings name here> The name of the new diagnostic settings for your Log Analytics workspace. Example: "diag-law-hub-myh-01"
+$logAnalyticsWorkspaceSku = "pergb2018"
+$logAnalyticsDiagnosticsName = #<your Log Analytics Diagnostics settings name here> The name of the new diagnostic settings for your Log Analytics workspace. Example: "diag-law-hub-myh-01"
 
 $tagSpokeName = #<your environment tag name here> The environment tag name you want to use. Example: "Env"
 $tagSpokeValue = "$($spoke[0].ToString().ToUpper())$($spoke.SubString(1))"
@@ -163,7 +163,7 @@ Write-Host ($writeEmptyLine + "# Resource group $rgLogAnalyticsWorkspaceName ava
 try {
     Get-AzOperationalInsightsWorkspace -Name $LogAnalyticsWorkspaceName -ResourceGroupName $rgLogAnalyticsWorkspaceName -ErrorAction Stop | Out-Null 
 } catch {
-    New-AzOperationalInsightsWorkspace -ResourceGroupName $rgLogAnalyticsWorkspaceName -Name $LogAnalyticsWorkspaceName -Location $region -Sku $LogAnalyticsWorkspaceSku -Force | Out-Null
+    New-AzOperationalInsightsWorkspace -ResourceGroupName $rgLogAnalyticsWorkspaceName -Name $LogAnalyticsWorkspaceName -Location $region -Sku $logAnalyticsWorkspaceSku -Force | Out-Null
 }
 
 # Set tags Log Analytics workspace
@@ -232,10 +232,10 @@ Write-Host ($writeEmptyLine + "# Solutions added to Log Analytics workspace $Log
 ## Set the log and metrics settings for the Log Analytics workspace if they don't exist
 
 try {
-    Get-AzDiagnosticSetting -Name $LogAnalyticsDiagnosticsName -ResourceId $workSpace.ResourceId -ErrorAction Stop | Out-Null
+    Get-AzDiagnosticSetting -Name $logAnalyticsDiagnosticsName -ResourceId $workSpace.ResourceId -ErrorAction Stop | Out-Null
     
 } catch {
-    Set-AzDiagnosticSetting -Name $LogAnalyticsDiagnosticsName -ResourceId $workSpace.ResourceId -Category Audit -MetricCategory AllMetrics -Enabled $true `
+    Set-AzDiagnosticSetting -Name $logAnalyticsDiagnosticsName -ResourceId $workSpace.ResourceId -Category Audit -MetricCategory AllMetrics -Enabled $true `
     -WorkspaceId ($workSpace.ResourceId) | Out-Null
 }
 
