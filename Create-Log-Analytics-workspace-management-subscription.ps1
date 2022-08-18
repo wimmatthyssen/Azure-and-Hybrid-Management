@@ -52,7 +52,7 @@ $spoke = "hub"
 $abbraviationManagement = "management"
 $region = #<your region here> The used Azure public region. Example: "westeurope"
 
-$rgLogAnalyticsWorkspaceName = #<your Log Analytics rg name here> The name of the resource group in which the new Log Analytics resources will be created. Example: "rg-hub-myh-management-01"
+$rgNameLogAnalyticsWorkspace = #<your Log Analytics rg name here> The name of the resource group in which the new Log Analytics resources will be created. Example: "rg-hub-myh-management-01"
 $LogAnalyticsWorkspaceName = #<your Log Analytics workspace name here> The name for your Log Analytics workspace. Example: "law-hub-myh-01"
 $logAnalyticsWorkspaceSku = "pergb2018"
 $logAnalyticsDiagnosticsName = #<your Log Analytics Diagnostics settings name here> The name of the new diagnostic settings for your Log Analytics workspace. Example: "diag-law-hub-myh-01"
@@ -133,27 +133,27 @@ Write-Host ($writeEmptyLine + "# Specified set of tags available to add" + $writ
 ## Create a resource group for Log Analytics if it does not exist. Add specified tags and lock with a CanNotDelete lock
 
 try {
-    Get-AzResourceGroup -Name $rgLogAnalyticsWorkspaceName -ErrorAction Stop | Out-Null 
+    Get-AzResourceGroup -Name $rgNameLogAnalyticsWorkspace -ErrorAction Stop | Out-Null 
 } catch {
-    New-AzResourceGroup -Name $rgLogAnalyticsWorkspaceName -Location $region -Force | Out-Null
+    New-AzResourceGroup -Name $rgNameLogAnalyticsWorkspace -Location $region -Force | Out-Null
 }
 
 # Set tags Log Analytics resource group
-Set-AzResourceGroup -Name $rgLogAnalyticsWorkspaceName -Tag $tags | Out-Null
+Set-AzResourceGroup -Name $rgNameLogAnalyticsWorkspace -Tag $tags | Out-Null
 
 # Add purpose tag to the Log Analytics resource group
-$storeTags = (Get-AzResourceGroup -Name $rgLogAnalyticsWorkspaceName).Tags
+$storeTags = (Get-AzResourceGroup -Name $rgNameLogAnalyticsWorkspace).Tags
 $storeTags += @{$tagPurposeName = $tagPurposeValue}
-Set-AzResourceGroup -Name $rgLogAnalyticsWorkspaceName -Tag $storeTags | Out-Null
+Set-AzResourceGroup -Name $rgNameLogAnalyticsWorkspace -Tag $storeTags | Out-Null
 
 # Lock Log Analytics resource group with a CanNotDelete lock
-$lock = Get-AzResourceLock -ResourceGroupName $rgLogAnalyticsWorkspaceName
+$lock = Get-AzResourceLock -ResourceGroupName $rgNameLogAnalyticsWorkspace
 
 if ($null -eq $lock){
-    New-AzResourceLock -LockName DoNotDeleteLock -LockLevel CanNotDelete -ResourceGroupName $rgLogAnalyticsWorkspaceName -LockNotes "Prevent $rgLogAnalyticsWorkspaceName from deletion" -Force | Out-Null
+    New-AzResourceLock -LockName DoNotDeleteLock -LockLevel CanNotDelete -ResourceGroupName $rgNameLogAnalyticsWorkspace -LockNotes "Prevent $rgNameLogAnalyticsWorkspace from deletion" -Force | Out-Null
     }
 
-Write-Host ($writeEmptyLine + "# Resource group $rgLogAnalyticsWorkspaceName available with tags and CanNotDelete lock" + $writeSeperatorSpaces + $currentTime)`
+Write-Host ($writeEmptyLine + "# Resource group $rgNameLogAnalyticsWorkspace available with tags and CanNotDelete lock" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -161,18 +161,18 @@ Write-Host ($writeEmptyLine + "# Resource group $rgLogAnalyticsWorkspaceName ava
 ## Create the Log Analytics workspace if it does not exist and add the specified tags
 
 try {
-    Get-AzOperationalInsightsWorkspace -Name $LogAnalyticsWorkspaceName -ResourceGroupName $rgLogAnalyticsWorkspaceName -ErrorAction Stop | Out-Null 
+    Get-AzOperationalInsightsWorkspace -Name $LogAnalyticsWorkspaceName -ResourceGroupName $rgNameLogAnalyticsWorkspace -ErrorAction Stop | Out-Null 
 } catch {
-    New-AzOperationalInsightsWorkspace -ResourceGroupName $rgLogAnalyticsWorkspaceName -Name $LogAnalyticsWorkspaceName -Location $region -Sku $logAnalyticsWorkspaceSku -Force | Out-Null
+    New-AzOperationalInsightsWorkspace -ResourceGroupName $rgNameLogAnalyticsWorkspace -Name $LogAnalyticsWorkspaceName -Location $region -Sku $logAnalyticsWorkspaceSku -Force | Out-Null
 }
 
 # Set tags Log Analytics workspace
-Set-AzOperationalInsightsWorkspace -ResourceGroupName $rgLogAnalyticsWorkspaceName -Name $LogAnalyticsWorkspaceName -Tag $tags | Out-Null
+Set-AzOperationalInsightsWorkspace -ResourceGroupName $rgNameLogAnalyticsWorkspace -Name $LogAnalyticsWorkspaceName -Tag $tags | Out-Null
 
 # Add purpose tag Log Analytics workspace
-$storeTags = (Get-AzOperationalInsightsWorkspace -Name $LogAnalyticsWorkspaceName -ResourceGroupName $rgLogAnalyticsWorkspaceName).Tags
+$storeTags = (Get-AzOperationalInsightsWorkspace -Name $LogAnalyticsWorkspaceName -ResourceGroupName $rgNameLogAnalyticsWorkspace).Tags
 $storeTags += @{$tagPurposeName = $tagPurposeValue}
-Set-AzOperationalInsightsWorkspace -ResourceGroupName $rgLogAnalyticsWorkspaceName -Name $LogAnalyticsWorkspaceName -Tag $storeTags | Out-Null
+Set-AzOperationalInsightsWorkspace -ResourceGroupName $rgNameLogAnalyticsWorkspace -Name $LogAnalyticsWorkspaceName -Tag $storeTags | Out-Null
 
 Write-Host ($writeEmptyLine + "# Log Analytics workspace $LogAnalyticsWorkspaceName created" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
@@ -181,7 +181,7 @@ Write-Host ($writeEmptyLine + "# Log Analytics workspace $LogAnalyticsWorkspaceN
 
 ## Save the Log Analytics workspace in a variable 
 
-$workSpace = Get-AzOperationalInsightsWorkspace -Name $LogAnalyticsWorkspaceName -ResourceGroupName $rgLogAnalyticsWorkspaceName
+$workSpace = Get-AzOperationalInsightsWorkspace -Name $LogAnalyticsWorkspaceName -ResourceGroupName $rgNameLogAnalyticsWorkspace
 
 Write-Host ($writeEmptyLine + "# Log Analytics workspace variable created" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
@@ -190,7 +190,7 @@ Write-Host ($writeEmptyLine + "# Log Analytics workspace variable created" + $wr
 
 ## List all solutions and their installation status
 
-# Get-AzOperationalInsightsIntelligencePack -ResourceGroupName $rgLogAnalyticsWorkspaceName -Name $LogAnalyticsWorkspaceName
+# Get-AzOperationalInsightsIntelligencePack -ResourceGroupName $rgNameLogAnalyticsWorkspace -Name $LogAnalyticsWorkspaceName
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -215,7 +215,7 @@ Write-Host ($writeEmptyLine + "# Solutions variable created" + $writeSeperatorSp
 ## Add the required solutions to the Log Analytics workspace
 
 foreach ($solution in $lawSolutions) {
-    New-AzMonitorLogAnalyticsSolution -Type $solution -ResourceGroupName $rgLogAnalyticsWorkspaceName -Location $workSpace.Location -WorkspaceResourceId $workSpace.ResourceId | Out-Null
+    New-AzMonitorLogAnalyticsSolution -Type $solution -ResourceGroupName $rgNameLogAnalyticsWorkspace -Location $workSpace.Location -WorkspaceResourceId $workSpace.ResourceId | Out-Null
 }
 
 Write-Host ($writeEmptyLine + "# Solutions added to Log Analytics workspace $LogAnalyticsWorkspaceName" + $writeSeperatorSpaces + $currentTime)`
@@ -225,7 +225,7 @@ Write-Host ($writeEmptyLine + "# Solutions added to Log Analytics workspace $Log
 
 ## List all monitor log analytics solutions under the Log Analytics workspace resource group
 
-# Get-AzMonitorLogAnalyticsSolution -ResourceGroupName $rgLogAnalyticsWorkspaceName
+# Get-AzMonitorLogAnalyticsSolution -ResourceGroupName $rgNameLogAnalyticsWorkspace
 
 ## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
