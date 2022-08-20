@@ -49,7 +49,7 @@ $spoke = "hub"
 $region = #<your region here> The used Azure public region. Example: "westeurope"
 $purpose = "CloudShell"
 
-$rgNameStorage = #<your Azure Cloud Shell rg here> The new Azure resource group in which the new Cloud Shell resources will be created. Example: "rg-hub-myh-storage-01"
+$rgNameStorage = #<your Azure Cloud Shell resource group name here> The new Azure resource group in which the new Cloud Shell resources will be created. Example: "rg-hub-myh-storage-01"
 
 $storageAccountNameCloudShell = #<your storage account name here> The name of the storage account used by Cloud Shell. Example: "sthubmyhcs01"
 $storageAccountSkuName = "Standard_LRS"
@@ -64,7 +64,7 @@ $tagSpokeValue = "$($spoke[0].ToString().ToUpper())$($spoke.SubString(1))"
 $tagCostCenterName = #<your costCenter tag name here> The costCenter tag name you want to use. Example: "CostCenter"
 $tagCostCenterValue = #<your costCenter tag value here> The costCenter tag value you want to use. Example: "23"
 $tagCriticalityName = #<your businessCriticality tag name here> The businessCriticality tag name you want to use. Example: "Criticality"
-$tagCriticalityValue = #<your businessCriticality tag value here> The businessCriticality tag value you want to use. Example:"High"
+$tagCriticalityValue = #<your businessCriticality tag value here> The businessCriticality tag value you want to use. Example: "High"
 $tagPurposeName = #<your purpose tag name here> The purpose tag name you want to use. Example: "Purpose"
 $tagPurposeValue = $purpose
 $tagSkuName = #<your SKU tag name here> The SKU tag name you want to use. Example: "Sku"
