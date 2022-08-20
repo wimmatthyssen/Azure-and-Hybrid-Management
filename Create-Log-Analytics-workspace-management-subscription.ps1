@@ -47,12 +47,11 @@ https://wmatthyssen.com/2022/08/01/azure-powershell-script-create-a-log-analytic
 
 ## Variables
 
-$companyShortName = #"<your company short name here>" The three-letter abbreviation of your company name here. Example: "myh"
 $spoke = "hub"
 $abbraviationManagement = "management"
 $region = #<your region here> The used Azure public region. Example: "westeurope"
 
-$rgNameLogAnalyticsWorkspace = #<your Log Analytics rg name here> The name of the resource group in which the new Log Analytics resources will be created. Example: "rg-hub-myh-management-01"
+$rgNameLogAnalyticsWorkspace = #<your Log Analytics resource group name here> The name of the resource group in which the new Log Analytics resources will be created. Example: "rg-hub-myh-management-01"
 $LogAnalyticsWorkspaceName = #<your Log Analytics workspace name here> The name for your Log Analytics workspace. Example: "law-hub-myh-01"
 $logAnalyticsWorkspaceSku = "pergb2018"
 $logAnalyticsDiagnosticsName = #<your Log Analytics Diagnostics settings name here> The name of the new diagnostic settings for your Log Analytics workspace. Example: "diag-law-hub-myh-01"
