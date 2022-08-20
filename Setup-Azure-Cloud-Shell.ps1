@@ -24,7 +24,7 @@ Created:        30/07/2020
 Last modified:  17/08/2022
 Author:         Wim Matthyssen
 Version:        2.0
-PowerShell:     PowerShell 5.1 and Azure PowerShell
+PowerShell:     Azure PowerShell
 Requires:       PowerShell Az (v5.9.0) Module
 Action:         Change variables where needed to fit your needs
 Disclaimer:     This script is provided "As Is" with no warranties
@@ -50,7 +50,8 @@ $region = #<your region here> The used Azure public region. Example: "westeurope
 $purpose = "CloudShell"
 
 $rgNameStorage = #<your Azure Cloud Shell rg here> The new Azure resource group in which the new Cloud Shell resources will be created. Example: "rg-hub-myh-storage-01"
-$cloudShellStorageAccountName = #<your storage account name here> The name of the storage account used by Cloud Shell. Example: "sthubmyhcs01"
+
+$storageAccountNameCloudShell = #<your storage account name here> The name of the storage account used by Cloud Shell. Example: "sthubmyhcs01"
 $storageAccountSkuName = "Standard_LRS"
 $storageAccountType = "StorageV2"
 $storageMinimumTlsVersion = "TLS1_2"
@@ -63,7 +64,7 @@ $tagSpokeValue = "$($spoke[0].ToString().ToUpper())$($spoke.SubString(1))"
 $tagCostCenterName = #<your costCenter tag name here> The costCenter tag name you want to use. Example: "CostCenter"
 $tagCostCenterValue = #<your costCenter tag value here> The costCenter tag value you want to use. Example: "23"
 $tagCriticalityName = #<your businessCriticality tag name here> The businessCriticality tag name you want to use. Example: "Criticality"
-$tagCriticalityValue = #<your businessCriticality tag value here> The businessCriticality tag value you want to use. Example: "High"
+$tagCriticalityValue = #<your businessCriticality tag value here> The businessCriticality tag value you want to use. Example:"High"
 $tagPurposeName = #<your purpose tag name here> The purpose tag name you want to use. Example: "Purpose"
 $tagPurposeValue = $purpose
 $tagSkuName = #<your SKU tag name here> The SKU tag name you want to use. Example: "Sku"
@@ -141,9 +142,9 @@ Write-Host ($writeEmptyLine + "# Resource group $rgNameStorage available" + $wri
 ## Create a general purpose v2 storage account for Cloud Shell with specific configuration settings, if it not already exists. Also apply the necessary tags to this storage account.
 
 try {
-    Get-AzStorageAccount -ResourceGroupName $rgNameStorage -Name $cloudShellStorageAccountName -ErrorAction Stop | Out-Null 
+    Get-AzStorageAccount -ResourceGroupName $rgNameStorage -Name $storageAccountNameCloudShell -ErrorAction Stop | Out-Null 
 } catch {
-    New-AzStorageAccount -ResourceGroupName $rgNameStorage -Name $cloudShellStorageAccountName -SkuName $storageAccountSkuName -Location $region -Kind $storageAccountType `
+    New-AzStorageAccount -ResourceGroupName $rgNameStorage -Name $storageAccountNameCloudShell -SkuName $storageAccountSkuName -Location $region -Kind $storageAccountType `
     -AllowBlobPublicAccess $false -MinimumTlsVersion $storageMinimumTlsVersion | Out-Null 
 }
 
@@ -151,9 +152,9 @@ try {
 $tags += @{$tagSkuName=$tagSkuValue}
 
 # Set tags storage account
-Set-AzStorageAccount -ResourceGroupName $rgNameStorage -Name $cloudShellStorageAccountName -Tag $tags | Out-Null
+Set-AzStorageAccount -ResourceGroupName $rgNameStorage -Name $storageAccountNameCloudShell -Tag $tags | Out-Null
 
-Write-Host ($writeEmptyLine + "# Storage account $cloudShellStorageAccountName created" + $writeSeperatorSpaces + $currentTime)`
+Write-Host ($writeEmptyLine + "# Storage account $storageAccountNameCloudShell created" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -163,14 +164,14 @@ Write-Host ($writeEmptyLine + "# Storage account $cloudShellStorageAccountName c
 $fileShareName = "$($purpose.ToString().ToLower())"
 
 try {
-    Get-AzRmStorageShare -ResourceGroupName $rgNameStorage -StorageAccountName $cloudShellStorageAccountName -Name $fileShareName -ErrorAction Stop | Out-Null 
+    Get-AzRmStorageShare -ResourceGroupName $rgNameStorage -StorageAccountName $storageAccountNameCloudShell -Name $fileShareName -ErrorAction Stop | Out-Null 
 } catch {
-    New-AzRmStorageShare -ResourceGroupName $rgNameStorage -StorageAccountName $cloudShellStorageAccountName -Name $fileShareName -AccessTier $fileShareAccessTier `
+    New-AzRmStorageShare -ResourceGroupName $rgNameStorage -StorageAccountName $storageAccountNameCloudShell -Name $fileShareName -AccessTier $fileShareAccessTier `
     -QuotaGiB $fileShareQuotaGiB | Out-Null 
 }
 
 # Set Metadata file share
-Update-AzRmStorageShare -ResourceGroupName $rgNameStorage -StorageAccountName $cloudShellStorageAccountName -Name $fileShareName -Metadata $tags | Out-Null
+Update-AzRmStorageShare -ResourceGroupName $rgNameStorage -StorageAccountName $storageAccountNameCloudShell -Name $fileShareName -Metadata $tags | Out-Null
 
 Write-Host ($writeEmptyLine + "# Azure file share $fileShareName created" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
