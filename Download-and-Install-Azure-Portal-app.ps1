@@ -13,13 +13,13 @@ After installation the Azure Portal app folder and the .exe file will be deleted
  
 Filename:       Download-and-Install-Azure-Portal-app.ps1
 Created:        02/01/2020
-Last modified:  11/01/2020
+Last modified:  02/09/2022
 Author:         Wim Matthyssen
 OS:             Windows Server 2016/2019/2022 or Windows 10/11        
 PowerShell:     5.1
 Requires:       -RunAsAdministrator
 OS:             Windows 10, Windows 11, Windows Server 2016, Windows Server 2019 and Windows Server 2022
-Version:        2.0
+Version:        2.1
 Action:         Change variables were needed to fit your needs.
 Disclaimer:     This script is provided "As Is" with no warranties.
  
@@ -91,7 +91,7 @@ If(!(test-path $tempAzurePortalAppFolder))
 New-Item -Path $tempFolder -Name $azurePortalAppFolderName -ItemType $itemType | Out-Null
 }
   
-Write-Host ($writeEmptyLine + "# $azurePortalAppFolderName folder available in the $tempFolderName folder" + $writeSeperatorSpaces + $currentTime)`
+Write-Host ($writeEmptyLine + "# $azurePortalAppFolderName folder available $tempFolderName folder" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
  
 ## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -116,7 +116,7 @@ Write-Host ($writeEmptyLine + "# The $AzurePortalAppFolderName is installed, you
  
 ## Remove AzurePortalInstaller.exe file and Azure Portal app folder from Temp folder after installation
  
-Start-Sleep 3
+Start-Sleep -s 6
 Get-ChildItem -Path $tempAzurePortalAppFolder -Force -Recurse  | Remove-Item -Force -Recurse
 Remove-Item $tempAzurePortalAppFolder -Force -Recurse
  
