@@ -10,6 +10,8 @@ The script will do all of the following:
 
 Check if the PowerShell window is running as Administrator (when not running from Cloud Shell), otherwise the Azure PowerShell script will be exited.
 Suppress breaking change warning messages.
+Install module Az.MonitoringSolutions.
+Register required resource provider (Microsoft.HybridCompute) if not already registered. Registration may take up to 10 minutes.
 Change the current context to use a management subscription (a subscription with *management* in the subscription name will be automatically selected).
 Store a specified set of tags in a hash table.
 Create a resource group for Log Analytics if it does not exist. Add specified tags and lock with a CanNotDelete lock.
@@ -23,9 +25,9 @@ Set the log and metrics settings for the Log Analytics workspace, if they don't 
 
 Filename:       Create-Log-Analytics-workspace-management-subscription.ps1
 Created:        14/10/2021
-Last modified:  18/08/2022
+Last modified:  04/10/2022
 Author:         Wim Matthyssen
-Version:        2.1
+Version:        2.2
 PowerShell:     Azure PowerShell and Azure Cloud Shell
 Requires:       PowerShell Az (v5.9.0)
 Action:         Change variables were needed to fit your needs.
@@ -106,6 +108,19 @@ if ($PSVersionTable.Platform -eq "Unix") {
 ## Suppress breaking change warning messages
 
 Set-Item Env:\SuppressAzurePowerShellBreakingChangeWarnings "true"
+
+## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Install module Az.MonitoringSolutions
+
+Install-Module Az.MonitoringSolutions
+
+## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Register required resource provider if not already registered. Registration may take up to 10 minutes
+
+# Register Microsoft.HybridCompute resource provider
+Register-AzResourceProvider -ProviderNamespace Microsoft.OperationsManagement  | Out-Null
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
