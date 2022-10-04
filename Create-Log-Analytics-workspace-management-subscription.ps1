@@ -10,7 +10,7 @@ The script will do all of the following:
 
 Check if the PowerShell window is running as Administrator (when not running from Cloud Shell), otherwise the Azure PowerShell script will be exited.
 Suppress breaking change warning messages.
-Install module Az.MonitoringSolutions.
+Install Azure PowerShell module Az.MonitoringSolutions.
 Register required resource provider (Microsoft.HybridCompute) if not already registered. Registration may take up to 10 minutes.
 Change the current context to use a management subscription (a subscription with *management* in the subscription name will be automatically selected).
 Store a specified set of tags in a hash table.
