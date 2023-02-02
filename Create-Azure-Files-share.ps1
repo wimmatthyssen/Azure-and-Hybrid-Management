@@ -77,6 +77,7 @@ $storageAccountDiagnosticsName = "diag" + "-" + $storageAccountName
 $fileShareName = $abbraviationFileShare + "-" + $spoke.ToLower() + "-" + $companyShortName + "-" + $inventoryNumbering.ToString("D2")
 $fileShareAccessTier = "TransactionOptimized" #"Premium" "Hot" "Cool"
 $fileShareDiagnosticsName = "diag" + "-" + $fileShareName
+$fileShareDeleteRetentionPolicy = 7
 
 $tagSpokeName = #<your environment tag name here> The environment tag name you want to use. Example:"Env"
 $tagSpokeValue = "$($spoke[0].ToString().ToUpper())$($spoke.SubString(1))"
@@ -220,7 +221,11 @@ try {
     Get-AzRmStorageShare -ResourceGroupName $rgNameStorage -StorageAccountName $storageAccountName -Name $fileShareName -ErrorAction Stop | Out-Null 
 } catch {
     New-AzRmStorageShare -ResourceGroupName $rgNameStorage -StorageAccountName $storageAccountName -Name $fileShareName -AccessTier $fileShareAccessTier `
-    -QuotaGiB $fileShareQuotaGiB | Out-Null 
+    -QuotaGiB $fileShareQuotaGiB | Out-Null
+
+    # Enable soft delete an Azure file share
+    Update-AzStorageFileServiceProperty -ResourceGroupName $rgNameStorage -StorageAccountName $storageAccountName -EnableShareDeleteRetentionPolicy $true `
+    -ShareRetentionDays $fileShareDeleteRetentionPolicy | Out-Null
 }
 
 # Save variable tags in a new variable to add tags.
@@ -283,9 +288,3 @@ Write-Host ($writeEmptyLine + "# Script completed" + $writeSeperatorSpaces + $cu
 -foregroundcolor $foregroundColor1 $writeEmptyLine 
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-
-
-
-    
