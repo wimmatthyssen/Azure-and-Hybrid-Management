@@ -36,7 +36,6 @@ Disclaimer:     This script is provided "As Is" with no warranties.
 Connect-AzAccount
 Get-AzTenant (if not using the default tenant)
 Set-AzContext -tenantID "xxxxxxxx-xxxx-xxxx-xxxxxxxxxxxx" (if not using the default tenant)
-Set-AzContext -Subscription "Subscription name"
 .\Create-Azure-Files-share <"your Azure subscription name here"> <"your spoke name here"> <"your File Share quota in GiB here">
 
 -> .\Create-Azure-Files-share sub-hub-myh-management-01 hub 5119
