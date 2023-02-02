@@ -223,7 +223,7 @@ try {
     New-AzRmStorageShare -ResourceGroupName $rgNameStorage -StorageAccountName $storageAccountName -Name $fileShareName -AccessTier $fileShareAccessTier `
     -QuotaGiB $fileShareQuotaGiB | Out-Null
 
-    # Enable soft delete an Azure file share
+    # Enable soft delete
     Update-AzStorageFileServiceProperty -ResourceGroupName $rgNameStorage -StorageAccountName $storageAccountName -EnableShareDeleteRetentionPolicy $true `
     -ShareRetentionDays $fileShareDeleteRetentionPolicy | Out-Null
 }
