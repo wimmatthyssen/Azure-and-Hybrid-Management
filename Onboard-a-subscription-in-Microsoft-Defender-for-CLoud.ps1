@@ -27,7 +27,7 @@ Last modified:  12/02/2023
 Author:         Wim Matthyssen
 Version:        1.0
 PowerShell:     Azure PowerShell and Azure Cloud Shell
-Requires:       PowerShell Az (v5.9.0)
+Requires:       PowerShell Az (v9.3.0)
 Action:         Change variables as needed to fit your needs.
 Disclaimer:     This script is provided "as is" with no warranties.
 
@@ -42,7 +42,7 @@ Set-AzContext -tenantID "xxxxxxxx-xxxx-xxxx-xxxxxxxxxxxx" (if not using the defa
 
 .LINK
 
-
+https://wmatthyssen.com/2023/02/13/onboard-an-azure-subscription-in-microsoft-defender-for-cloud-using-an-azure-powershell-script/
 #>
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -58,11 +58,7 @@ param(
 
 ## Variables
 
-$companyShortName ="myh"
-$abbraviationLogAnalytics = "law"
-$inventoryNumbering = 1
-
-$logAnalyticsWorkSpaceName = $abbraviationLogAnalytics + "-" + "hub" + "-" + $companyShortName + "-" + $inventoryNumbering.ToString("D2")
+$logAnalyticsWorkSpaceName = #<your Log Analytics workspace name here> The name of your existing Log Analytics workspace. Example: "law-hub-myh-01"
 
 $global:currenttime= Set-PSBreakpoint -Variable currenttime -Mode Read -Action {$global:currenttime= Get-Date -UFormat "%A %m/%d/%Y %R"}
 $foregroundColor1 = "Red"
@@ -108,7 +104,7 @@ Set-Item Env:\SuppressAzurePowerShellBreakingChangeWarnings "true"
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Change the current context to the subscription holding the central Log Analytics workspace.
+## Change the current context to the subscription holding the central Log Analytics workspace
 
 # Change subscripiton type name --> example: *management*
 $subNameManagement = Get-AzSubscription | Where-Object {$_.Name -like "*your subscripiton type name here*"}
@@ -227,4 +223,3 @@ Write-Host ($writeEmptyLine + "# Script completed" + $writeSeperatorSpaces + $cu
 -foregroundcolor $foregroundColor1 $writeEmptyLine 
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
