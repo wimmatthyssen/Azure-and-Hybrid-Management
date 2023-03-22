@@ -9,7 +9,7 @@ A script used to create an Azure Files share in a selected Azure subscription.
 This script will do all of the following:
 
 Remove the breaking change warning messages.
-Change the current context to use a management subscription holding your central Log Anlytics workspace.
+Change the current context to use a management subscription holding your central Log Analytics workspace.
 Save the Log Analytics workspace from the management subscription as a variable.
 Change the current context to the specified subscription.
 Store a specified set of tags in a hash table.
