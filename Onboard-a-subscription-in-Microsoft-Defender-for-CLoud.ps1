@@ -8,7 +8,6 @@ A script used to onboard an Azure subscription in Microsoft Defender for Cloud.
 A script used to onboard an Azure subscription in Microsoft Defender for Cloud.
 The script will do all of the following:
 
-Check if the PowerShell window is running as administrator (when not running from Cloud Shell); otherwise, the Azure PowerShell script will be exited.
 Remove the breaking change warning messages.
 Change the current context to the subscription holding the central Log Analytics workspace.
 Save the Log Analytics workspace as a variable.
@@ -23,9 +22,9 @@ Configure security contacts.
 
 Filename:       Onboard-a-subscription-in-Microsoft-Defender-for-Cloud.ps1
 Created:        12/02/2023
-Last modified:  12/02/2023
+Last modified:  22/03/2023
 Author:         Wim Matthyssen
-Version:        1.0
+Version:        1.3
 PowerShell:     Azure PowerShell and Azure Cloud Shell
 Requires:       PowerShell Az (v9.3.0)
 Action:         Change variables as needed to fit your needs.
@@ -68,46 +67,24 @@ $writeSeperatorSpaces = " - "
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Check if the PowerShell window is running as administrator (when not running from Cloud Shell); otherwise, the Azure PowerShell script will be exited
-
-if ($PSVersionTable.Platform -eq "Unix") {
-    Write-Host ($writeEmptyLine + "# Running in Cloud Shell" + $writeSeperatorSpaces + $currentTime)`
-    -foregroundcolor $foregroundColor1 $writeEmptyLine
-    
-    ## Start script execution    
-    Write-Host ($writeEmptyLine + "# Script started. Without any errors, it will take around 2 minutes to complete" + $writeSeperatorSpaces + $currentTime)`
-    -foregroundcolor $foregroundColor1 $writeEmptyLine 
-} else {
-    $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
-    $isAdministrator = $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
-
-        ## Check if running as Administrator, otherwise exit the script
-        if ($isAdministrator -eq $false) {
-        Write-Host ($writeEmptyLine + "# Please run PowerShell as an administrator" + $writeSeperatorSpaces + $currentTime)`
-        -foregroundcolor $foregroundColor1 $writeEmptyLine
-        Start-Sleep -s 3
-        exit
-        }
-        else {
-
-        ## If running as an administrator, start script execution    
-        Write-Host ($writeEmptyLine + "# Script started. Without any errors, it will take around 2 minutes to complete" + $writeSeperatorSpaces + $currentTime)`
-        -foregroundcolor $foregroundColor1 $writeEmptyLine 
-        }
-}
-
-## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 ## Remove the breaking change warning messages
 
-Set-Item Env:\SuppressAzurePowerShellBreakingChangeWarnings "true"
+Set-Item -Path Env:\SuppressAzurePowerShellBreakingChangeWarnings -Value $true | Out-Null
+Update-AzConfig -DisplayBreakingChangeWarning $false | Out-Null
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Change the current context to the subscription holding the central Log Analytics workspace
+## Write script started
 
-# Change subscripiton type name --> example: *management*
-$subNameManagement = Get-AzSubscription | Where-Object {$_.Name -like "*your subscripiton type name here*"}
+Write-Host ($writeEmptyLine + "# Script started. Without errors, it can take up to 2 minutes to complete" + $writeSeperatorSpaces + $currentTime)`
+-foregroundcolor $foregroundColor1 $writeEmptyLine 
+
+## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Change the current context to use the management subscription holding the central Log Analytics workspace
+
+# Replace <your subscription purpose name here> with purpose name of your subscription. Example: "*management*"
+$subNameManagement = Get-AzSubscription | Where-Object {$_.Name -like "*management*"}
 
 Set-AzContext -SubscriptionId $subNameManagement.SubscriptionId | Out-Null 
 
@@ -116,7 +93,7 @@ Write-Host ($writeEmptyLine + "# The subscription holding the central Log Analyt
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Save the Log Analytics workspace as a variable
+## Save Log Analytics workspace from the management subscription as variable
 
 $workSpace = Get-AzOperationalInsightsWorkspace | Where-Object Name -Match $logAnalyticsWorkSpaceName
 
@@ -206,13 +183,10 @@ Write-Host ($writeEmptyLine + "# Auto-provision installation of the Log Analytic
 
 ## Configure security contacts
 
-# Change -Name and -Email --> example: -Name "azureadmin" -Email "azure.admin@example.com"
-Set-AzSecurityContact -Name "<your first security contact name here>" -Email "<your first email address here>" -AlertAdmin -NotifyOnAlert
+Set-AzSecurityContact -Name "azureadmin" -Email "azure.admin@example.com" -AlertAdmin -NotifyOnAlert | Out-Null
+Set-AzSecurityContact -Name "azuresupport" -Email "azure.support@example.com" -AlertAdmin -NotifyOnAlert | Out-Null
 
-# Change -Name and -Email --> example: -Name "azuresupport" -Email "azure.support@example.com"
-Set-AzSecurityContact -Name "<your second security contact name here>" -Email "<your second email address here>" -AlertAdmin -NotifyOnAlert 
-
-Write-Host ($writeEmptyLine + "# Security contact details are defined" + $writeSeperatorSpaces + $currentTime)`
+Write-Host ($writeEmptyLine + "# Security contact details defined" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
