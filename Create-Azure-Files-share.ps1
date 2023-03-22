@@ -1,20 +1,20 @@
 <#
 .SYNOPSIS
 
-A script used to create an Azure Files share in the selected Azure subscription.
+A script used to create an Azure Files share in a selected Azure subscription.
 
 .DESCRIPTION
 
-A script used to create an Azure Files share in the selected Azure subscription.
+A script used to create an Azure Files share in a selected Azure subscription.
 This script will do all of the following:
 
-Check if the PowerShell window is running as Administrator (when not running from Cloud Shell); otherwise, the Azure PowerShell script will be exited.
-Suppress breaking change warning messages.
-Change the current context to the specified subscription.
+Remove the breaking change warning messages.
+Change the current context to use a management subscription holding your central Log Anlytics workspace.
 Save the Log Analytics workspace from the management subscription as a variable.
+Change the current context to the specified subscription.
 Store a specified set of tags in a hash table.
-Create a resource group for the File Share resources if it not already exists. Also apply the necessary tags to this resource group.
-Create a general purpose v2 storage account for the File Share with specific configuration settings if it does not already exist. Also apply the necessary tags to this storage account.
+Create a resource group for the File Share resources if it does not already exist. Also apply the necessary tags to this resource group.
+Create a general-purpose v2 storage account for the File Share with specific configuration settings if it does not already exist. Also apply the necessary tags to this storage account.
 Create an Azure file share if it does not exist. Also apply the necessary meta data to this file share.
 Set the log and metrics settings for the storage account resource if they don't exist.
 Set the log and metrics settings for the file share if they don't exist.
@@ -23,13 +23,13 @@ Set the log and metrics settings for the file share if they don't exist.
 
 Filename:       Create-Azure-Files-share.ps1
 Created:        01/02/2023
-Last modified:  01/02/2023
+Last modified:  21/03/2023
 Author:         Wim Matthyssen
-Version:        1.0
+Version:        2.0
 PowerShell:     Azure PowerShell and Azure Cloud Shell
 Requires:       PowerShell Az (v9.3.0)
 Action:         Change variables were needed to fit your needs. 
-Disclaimer:     This script is provided "As Is" with no warranties.
+Disclaimer:     This script is provided "as is" with no warranties.
 
 .EXAMPLE
 
@@ -92,40 +92,30 @@ $tagSkuName = "Sku"
 $tagSkuValue = $storageAccountSkuName
 
 $global:currenttime= Set-PSBreakpoint -Variable currenttime -Mode Read -Action {$global:currenttime= Get-Date -UFormat "%A %m/%d/%Y %R"}
-$foregroundColor1 = "Red"
+$foregroundColor1 = "Green"
 $foregroundColor2 = "Yellow"
 $writeEmptyLine = "`n"
 $writeSeperatorSpaces = " - "
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Check if PowerShell runs as Administrator; otherwise, exit the script.
+## Remove the breaking change warning messages
 
-$currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
-$isAdministrator = $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
-
-## Check if you are running PowerShell as an administrator; otherwise, exit the script.
-if ($isAdministrator -eq $false) {
-    Write-Host ($writeEmptyLine + "# Please run PowerShell as Administrator" + $writeSeperatorSpaces + $currentTime)`
-    -foregroundcolor $foregroundColor1 $writeEmptyLine
-    Start-Sleep -s 3
-    exit
-} else {
-    ## Begin script execution if you are running as Administrator.  
-    Write-Host ($writeEmptyLine + "# Script started. Without any errors, it will need around 1 minute to complete" + $writeSeperatorSpaces + $currentTime)`
-    -foregroundcolor $foregroundColor1 $writeEmptyLine 
-    }
+Set-Item -Path Env:\SuppressAzurePowerShellBreakingChangeWarnings -Value $true | Out-Null
+Update-AzConfig -DisplayBreakingChangeWarning $false | Out-Null
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Suppress breaking change warning messages.
+## Write script started
 
-Set-Item Env:\SuppressAzurePowerShellBreakingChangeWarnings "true"
+Write-Host ($writeEmptyLine + "# Script started. Without errors, it can take up to 2 minutes to complete" + $writeSeperatorSpaces + $currentTime)`
+-foregroundcolor $foregroundColor1 $writeEmptyLine 
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Change the current context to use a management subscription
+## Change the current context to use a management subscription holding your central Log Anlytics workspace
 
+# Replace <your subscription purpose name here> with purpose name of your subscription. Example: "*management*"
 $subNameManagement = Get-AzSubscription | Where-Object {$_.Name -like "*management*"}
 
 Set-AzContext -SubscriptionId $subNameManagement.SubscriptionId | Out-Null 
@@ -143,7 +133,8 @@ Write-Host ($writeEmptyLine + "# Log Analytics workspace variable created" + $wr
 -foregroundcolor $foregroundColor2 $writeEmptyLine
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-## Change the current context to the specified subscription.
+
+## Change the current context to the specified subscription
 
 $subName = Get-AzSubscription | Where-Object {$_.Name -like $subscriptionName}
 
@@ -154,7 +145,7 @@ Write-Host ($writeEmptyLine + "# Specified subscription in current tenant select
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Store the specified set of tags in a hash table.
+## Store the specified set of tags in a hash table
 
 $tags = @{$tagSpokeName=$tagSpokeValue;$tagCostCenterName=$tagCostCenterValue;$tagCriticalityName=$tagCriticalityValue}
 
@@ -163,7 +154,7 @@ Write-Host ($writeEmptyLine + "# Specified set of tags available to add" + $writ
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Create a resource group for the File Share resources if it not already exists. Also apply the necessary tags to this resource group.
+## Create a resource group for the File Share resources if it does not already exist. Also apply the necessary tags to this resource group
 
 try {
     Get-AzResourceGroup -Name $rgNameStorage -ErrorAction Stop | Out-Null 
@@ -185,12 +176,12 @@ Write-Host ($writeEmptyLine + "# Resource group $rgNameStorage available" + $wri
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Create a general purpose v2 storage account for the File Share with specific configuration settings if it does not already exist. Also apply the necessary tags to this storage account.
+## Create a general-purpose v2 storage account for the File Share with specific configuration settings if it does not already exist. Also apply the necessary tags to this storage account
 
-# If you require a large file share (up to 100 TiB), you must add the "-EnableLargeFileShare parameter" at the end of the New-AzStorageAccount cmdlet. 
-# Keep in mind that you cannot use this with a geo-redundant or geo-zone-redundant storage account.
+# If you require a large file share (up to 100 TiB), you must add the "-EnableLargeFileShare parameter" at the end of the New-AzStorageAccount cmdlet
+# Keep in mind that you cannot use this with a geo-redundant or geo-zone-redundant storage account
 
-# If you require Azure Files AAD DS Authentication, you must add "-EnableAzureActiveDirectoryDomainServicesForFile $true" at the end of the New-AzStorageAccount cmdlet. 
+# If you require Azure Files AAD DS Authentication, you must add "-EnableAzureActiveDirectoryDomainServicesForFile $true" at the end of the New-AzStorageAccount cmdlet
 
 try {
     Get-AzStorageAccount -ResourceGroupName $rgNameStorage -Name $storageAccountName -ErrorAction Stop | Out-Null 
@@ -199,16 +190,16 @@ try {
     -AllowBlobPublicAccess $false -AllowSharedKeyAccess $false -MinimumTlsVersion $storageMinimumTlsVersion | Out-Null 
 }
 
-# Save variable tags in a new variable to add tags.
+# Save variable tags in a new variable to add tags
 $tagsStorageAccount = $tags
 
-# Add Purpose tag to tags for the storage account.
+# Add Purpose tag to tags for the storage account
 $tagsStorageAccount += @{$tagPurposeName = $tagPurposeValue}
 
-# Add Sku tag to tags for the storage account.
+# Add Sku tag to tags for the storage account
 $tagsStorageAccount += @{$tagSkuName = $tagSkuValue}
 
-# Set tags storage account.
+# Set tags storage account
 Set-AzStorageAccount -ResourceGroupName $rgNameStorage -Name $storageAccountName -Tag $tagsStorageAccount | Out-Null
 
 Write-Host ($writeEmptyLine + "# Storage account $storageAccountName created" + $writeSeperatorSpaces + $currentTime)`
@@ -216,7 +207,7 @@ Write-Host ($writeEmptyLine + "# Storage account $storageAccountName created" + 
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Create an Azure file share if it does not exist. Also apply the necessary meta data to this file share.
+## Create an Azure file share if it does not exist. Also apply the necessary meta data to this file share
 
 try {
     Get-AzRmStorageShare -ResourceGroupName $rgNameStorage -StorageAccountName $storageAccountName -Name $fileShareName -ErrorAction Stop | Out-Null 
@@ -229,10 +220,10 @@ try {
     -ShareRetentionDays $fileShareDeleteRetentionPolicy | Out-Null
 }
 
-# Save variable tags in a new variable to add tags.
+# Save variable tags in a new variable to add tags
 $tagsFileShare = $tags
 
-# Add Purpose tag to tags for the file share.
+# Add Purpose tag to the tags for the file share
 $tagsFileShare += @{$tagPurposeName = $tagPurposeValue}
 
 # Set Metadata file share
@@ -243,7 +234,7 @@ Write-Host ($writeEmptyLine + "# Azure file share $fileShareName created" + $wri
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Set the log and metrics settings for the storage account resource if they don't exist.
+## Set the log and metrics settings for the storage account resource if they don't exist
 
 $storageAccount = Get-AzStorageAccount -ResourceGroupName $rgNameStorage -Name $storageAccountName
 
@@ -260,7 +251,7 @@ Write-Host ($writeEmptyLine + "# Storage account $storageAccountName diagnostic 
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Set the log and metrics settings for the file share if they don't exist.
+## Set the log and metrics settings for the file share if they don't exist
 
 $fileShare = Get-AzRmStorageShare -ResourceGroupName $rgNameStorage -StorageAccountName $storageAccountName -Name $fileShareName
 
