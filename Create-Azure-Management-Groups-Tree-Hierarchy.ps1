@@ -1,24 +1,30 @@
 <#
 .SYNOPSIS
 
-A script used to create a management groups tree structure
+A script used to create an Azure management group tree structure.
 
 .DESCRIPTION
 
-A script used to create a management groups tree structure. 
-When all management groups are created the Azure subscriptions will be moved to the corresponding management group.
+A script used to create an Azure management group tree structure.
+
+Remove the breaking change warning messages.
+Create Company management group.
+Create Top management groups.
+Create Platform management groups.
+Create Landing Zones management groups.
+Move subscriptions from the tenant root group or previous group scope to the appropriate management groups if they are present.
 
 .NOTES
 
 Filename:       Create-Azure-Management-Groups-Tree-Hierarchy.ps1
 Created:        31/07/2020
-Last modified:  21/04/2022
+Last modified:  27/11/2023
 Author:         Wim Matthyssen
-PowerShell:     Azure PowerShell or Azure Cloud Shell
-Version:        Install latest Azure PowerShell modules
+Version:        2.0
+PowerShell:     Azure PowerShell and Azure Cloud Shell
+Requires:       PowerShell Az (v10.4.1)
 Action:         Change variables were needed to fit your needs. 
-Disclaimer:     This script is provided "As Is" with no warranties.
-
+Disclaimer:     This script is provided "as is" with no warranties.
 
 .EXAMPLE
 
@@ -31,37 +37,55 @@ https://wmatthyssen.com/2022/04/04/azure-powershell-script-create-a-management-g
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+## Functions
+
+function GenerateManagementGroup {
+    param (
+        [string]$prefix,
+        [string]$suffix
+    )
+
+    $groupName = "mg-" + $prefix + $suffix
+    $groupGuid = New-Guid
+
+    return $groupName, $groupGuid
+}
+
+# ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 ## Variables
 
-$companyFullName = "<companyFullName>" # <your company full name here> Example: "myhcjourney"
-$companyShortName ="<companyShortName>" # <your company short name here> Best is to use a three letter abbreviation. Example: "myh"
+$companyFullName = "<companyFullName>" # <your company full name here> Example: "wimacorp"
+$companyShortName = $companyFullName.Substring(0,3)
 
-$companyManagementGroupName = "mg-" + $companyFullName 
-$companyManagementGroupGuid = New-Guid
+# Company management group
+$companyManagementGroupName, $companyManagementGroupGuid = GenerateManagementGroup -prefix "" -suffix $companyFullName
 
-$platformManagementGroupName = "mg-" + $companyShortName + "-platform"
-$platformManagementGroupGuid = New-Guid
-$landingZonesManagementGroupName = "mg-" + $companyShortName + "-landingzones"
-$landingZonesManagementGroupGuid = New-Guid
-$sandboxesManagementGroupName = "mg-" + $companyShortName + "-sandboxes"
-$sandboxesManagementGroupGuid = New-Guid
-$decommissionedManagementGroupName = "mg-" + $companyShortName + "-decommissioned"
-$decommissionedManagementGroupGuid = New-Guid
+# Top management groups
+$platformManagementGroupName, $platformManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-platform"
+$landingZonesManagementGroupName, $landingZonesManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-landingzones"
+$sandboxesManagementGroupName, $sandboxesManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-sandboxes"
+$decommissionedManagementGroupName, $decommissionedManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-decommissioned"
 
-$managementManagementGroupName = "mg-" + $companyShortName + "-management"
-$managementManagementGroupGuid = New-Guid
-$connectivityManagementGroupName = "mg-" + $companyShortName + "-connectivity"
-$connectivityManagementGroupGuid = New-Guid
-$identityManagementGroupName = "mg-" + $companyShortName + "-identity"
-$identityManagementGroupGuid = New-Guid
+# Platform management groups
+$managementManagementGroupName, $managementManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-management"
+$connectivityManagementGroupName, $connectivityManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-connectivity"
+$identityManagementGroupName, $identityManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-identity"
 
-$corpManagementGroupName = "mg-" + $companyShortName + "-corp"
-$corpManagementGroupGuid = New-Guid
-$onlineManagementGroupName = "mg-" + $companyShortName + "-online"
-$onlineManagementGroupGuid = New-Guid
-$sapManagementGroupName = "mg-" + $companyShortName + "-sap"
-$sapManagementGroupGuid = New-Guid
+#Landing Zones management groups
+$corpManagementGroupName, $corpManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-corp"
+$onlineManagementGroupName, $onlineManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-online"
+$arcInfraManagementGroupName, $arcInfraManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-arc-infra"
+$arcK8sManagementGroupName, $arcK8sManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-arc-k8s"
+$arcDataManagementGroupName, $arcDataManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-arc-data"
+$avdManagementGroupName, $avdManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-avd"
+$aksManagementGroupName, $aksManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-aks"
+$sapManagementGroupName, $sapManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-sap"
+$confidentialCorpManagementGroupName, $confidentialCorpManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-confidential-corp"
+$confidentialOnlineManagementGroupName, $confidentialOnlineManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-confidential-online"
+$confidentialAksManagementGroupName, $confidentialAksManagementGroupGuid  = GenerateManagementGroup -prefix $companyShortName -suffix "-confidential-aks"
 
+# Subscriptions
 $subNameManagement = Get-AzSubscription | Where-Object {$_.Name -like "*management*"}
 $subNameConnectivity = Get-AzSubscription | Where-Object {$_.Name -like "*connectivity*"}
 $subNameIdentity = Get-AzSubscription | Where-Object {$_.Name -like "*identity*"}
@@ -69,60 +93,52 @@ $subNameCorpPrd = Get-AzSubscription | Where-Object {$_.Name -like "*prd*corp*"}
 $subNameCorpDev = Get-AzSubscription | Where-Object {$_.Name -like "*dev*corp*"}
 $subNameOnlinePrd = Get-AzSubscription | Where-Object {$_.Name -like "*prd*online*"}
 $subNameOnlineDev = Get-AzSubscription | Where-Object {$_.Name -like "*dev*online*"}
+$subNameArcInfraPrd = Get-AzSubscription | Where-Object {$_.Name -like "*prd*arc*infra*"}
+$subNameArcInfraDev = Get-AzSubscription | Where-Object {$_.Name -like "*dev*arc*infra*"}
+$subNameArcK8sPrd = Get-AzSubscription | Where-Object {$_.Name -like "*prd*arc*k8s*"}
+$subNameArcK8sDev = Get-AzSubscription | Where-Object {$_.Name -like "*dev*arc*k8s*"}
+$subNameArcDataPrd = Get-AzSubscription | Where-Object {$_.Name -like "*prd*arc*data*"}
+$subNameArcDataDev = Get-AzSubscription | Where-Object {$_.Name -like "*dev*arc*data*"}
+$subNameAvdPrd = Get-AzSubscription | Where-Object {$_.Name -like "*prd*avd*"}
+$subNameAvdDev = Get-AzSubscription | Where-Object {$_.Name -like "*dev*avd*"}
+$subNameAksPrd = Get-AzSubscription | Where-Object {$_.Name -like "*prd*aks*"}
+$subNameAksDev = Get-AzSubscription | Where-Object {$_.Name -like "*dev*aks*"}
 $subNameSapPrd = Get-AzSubscription | Where-Object {$_.Name -like "*prd*sap*"}
 $subNameSapDev = Get-AzSubscription | Where-Object {$_.Name -like "*dev*sap*"}
 $subNameTest = Get-AzSubscription | Where-Object {$_.Name -like "*tst*"}
+$subNameConfidentialCorpPrd = Get-AzSubscription | Where-Object {$_.Name -like "*confidential*prd*corp*"}
+$subNameConfidentialCorpDev = Get-AzSubscription | Where-Object {$_.Name -like "*confidential*dev*corp*"}
+$subNameConfidentialOnlinePrd = Get-AzSubscription | Where-Object {$_.Name -like "*confidential*prd*online*"}
+$subNameConfidentialOnlineDev = Get-AzSubscription | Where-Object {$_.Name -like "*confidential*dev*online*"}
+$subNameConfidentialAksPrd = Get-AzSubscription | Where-Object {$_.Name -like "*confidential*prd*aks*"}
+$subNameConfidentialAksDev = Get-AzSubscription | Where-Object {$_.Name -like "*confidential*dev*aks*"}
 
-$global:currenttime= Set-PSBreakpoint -Variable currenttime -Mode Read -Action {$global:currenttime= Get-Date -UFormat "%A %m/%d/%Y %R"}
-$foregroundColor1 = "Red"
+# Time, colors, and formatting
+Set-PSBreakpoint -Variable currenttime -Mode Read -Action {$global:currenttime = Get-Date -Format "dddd MM/dd/yyyy HH:mm"} | Out-Null 
+$foregroundColor1 = "Green"
 $foregroundColor2 = "Yellow"
 $writeEmptyLine = "`n"
 $writeSeperatorSpaces = " - "
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Check if PowerShell runs as Administrator (when not running from Cloud Shell), otherwise exit the script
+## Remove the breaking change warning messages
 
-if ($PSVersionTable.Platform -eq "Unix") {
-    Write-Host ($writeEmptyLine + "# Running in Cloud Shell" + $writeSeperatorSpaces + $currentTime)`
-    -foregroundcolor $foregroundColor1 $writeEmptyLine
-    
-    ## Start script execution    
-    Write-Host ($writeEmptyLine + "# Script started. Without any errors, it will need around 5 minute to complete" + $writeSeperatorSpaces + $currentTime)`
-    -foregroundcolor $foregroundColor1 $writeEmptyLine 
-} else {
-    $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
-    $isAdministrator = $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
-
-        ## Check if running as Administrator, otherwise exit the script
-        if ($isAdministrator -eq $false) {
-        Write-Host ($writeEmptyLine + "# Please run PowerShell as Administrator" + $writeSeperatorSpaces + $currentTime)`
-        -foregroundcolor $foregroundColor1 $writeEmptyLine
-        Start-Sleep -s 3
-        exit
-        }
-        else {
-
-        ## If running as Administrator, start script execution    
-        Write-Host ($writeEmptyLine + "# Script started. Without any errors, it will need around 5 minutes to complete" + $writeSeperatorSpaces + $currentTime)`
-        -foregroundcolor $foregroundColor1 $writeEmptyLine 
-        }
-}
-
-## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-## Suppress breaking change warning messages
-
-Set-Item Env:\SuppressAzurePowerShellBreakingChangeWarnings "true"
+Set-Item -Path Env:\SuppressAzurePowerShellBreakingChangeWarnings -Value $true | Out-Null
+Update-AzConfig -DisplayBreakingChangeWarning $false | Out-Null
+$warningPreference = "SilentlyContinue"
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Create Company management group
+## Write script started
 
-New-AzManagementGroup -GroupName $companyManagementGroupGuid -DisplayName $companyManagementGroupName | Out-Null
+Write-Host ($writeEmptyLine + "# Script started. If there are no errors, it may take up to 7 minutes to finish, depending on the volume of resources" + $writeSeperatorSpaces + $currentTime)`
+-foregroundcolor $foregroundColor1 $writeEmptyLine 
 
-# Store Company management group in a variable
-$companyParentGroup = Get-AzManagementGroup -GroupName $companyManagementGroupGuid
+## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Create Company management group
+$companyParentGroup = New-AzManagementGroup -GroupName $companyManagementGroupGuid -DisplayName $companyManagementGroupName
 
 Write-Host ($writeEmptyLine + "# Company management group $companyManagementGroupName created" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
@@ -132,20 +148,16 @@ Write-Host ($writeEmptyLine + "# Company management group $companyManagementGrou
 ## Create Top management groups
 
 # Create Platform management group
-New-AzManagementGroup -GroupName $platformManagementGroupGuid -DisplayName $platformManagementGroupName -ParentObject $companyParentGroup | Out-Null
+$platformParentGroup = New-AzManagementGroup -GroupName $platformManagementGroupGuid -DisplayName $platformManagementGroupName -ParentObject $companyParentGroup
 
 # Create Landing Zones management group
-New-AzManagementGroup -GroupName $landingZonesManagementGroupGuid -DisplayName $landingZonesManagementGroupName -ParentObject $companyParentGroup | Out-Null
+$landingZonesParentGroup = New-AzManagementGroup -GroupName $landingZonesManagementGroupGuid -DisplayName $landingZonesManagementGroupName -ParentObject $companyParentGroup 
 
 # Create Sandbox management group
 New-AzManagementGroup -GroupName $sandboxesManagementGroupGuid -DisplayName $sandboxesManagementGroupName -ParentObject $companyParentGroup | Out-Null
 
 # Create Decomission management group
 New-AzManagementGroup -GroupName $decommissionedManagementGroupGuid -DisplayName $decommissionedManagementGroupName -ParentObject $companyParentGroup | Out-Null
-
-# Store specific Top management groups in variables
-$platformParentGroup = Get-AzManagementGroup -GroupName $platformManagementGroupGuid 
-$landingZonesParentGroup = Get-AzManagementGroup -GroupName $landingZonesManagementGroupGuid
 
 Write-Host ($writeEmptyLine + "# Top management groups $platformManagementGroupName, $landingZonesManagementGroupName, $sandboxesManagementGroupName, and `
 $decommissionedManagementGroupName created" + $writeSeperatorSpaces + $currentTime) -foregroundcolor $foregroundColor2 $writeEmptyLine
@@ -176,74 +188,193 @@ New-AzManagementGroup -GroupName $corpManagementGroupGuid -DisplayName $corpMana
 # Create Online management group
 New-AzManagementGroup -GroupName $onlineManagementGroupGuid -DisplayName $onlineManagementGroupName -ParentObject $landingZonesParentGroup | Out-Null
 
-# Create SAP management group
+# Create Arc infra management group
+New-AzManagementGroup -GroupName $arcInfraManagementGroupGuid -DisplayName $arcInfraManagementGroupName -ParentObject $landingZonesParentGroup | Out-Null
+
+# Create Arc k8s management group
+New-AzManagementGroup -GroupName $arcK8sManagementGroupGuid -DisplayName $arcK8sManagementGroupName -ParentObject $landingZonesParentGroup | Out-Null
+
+# Create Arc data management group
+New-AzManagementGroup -GroupName $arcDataManagementGroupGuid -DisplayName $arcDataManagementGroupName -ParentObject $landingZonesParentGroup | Out-Null
+
+# Create Avd management group
+New-AzManagementGroup -GroupName $avdManagementGroupGuid -DisplayName $avdManagementGroupName -ParentObject $landingZonesParentGroup | Out-Null
+
+# Create Aks management group
+New-AzManagementGroup -GroupName $aksManagementGroupGuid -DisplayName $aksManagementGroupName -ParentObject $landingZonesParentGroup | Out-Null
+
+# Create Sap management group
 New-AzManagementGroup -GroupName $sapManagementGroupGuid -DisplayName $sapManagementGroupName -ParentObject $landingZonesParentGroup | Out-Null
 
-Write-Host ($writeEmptyLine + "# Landing Zones management groups $corpManagementGroupName, $onlineManagementGroupName and `
-$sapManagementGroupName created" + $writeSeperatorSpaces + $currentTime) -foregroundcolor $foregroundColor2 $writeEmptyLine
+# Create Confidential Corp management group
+New-AzManagementGroup -GroupName $confidentialCorpManagementGroupGuid -DisplayName $confidentialCorpManagementGroupName -ParentObject $landingZonesParentGroup | Out-Null
+
+# Create Confidentials Online management group
+New-AzManagementGroup -GroupName $confidentialOnlineManagementGroupGuid -DisplayName $confidentialOnlineManagementGroupName -ParentObject $landingZonesParentGroup | Out-Null
+
+# Create Confidentials Aks management group
+New-AzManagementGroup -GroupName $confidentialAksManagementGroupGuid -DisplayName $confidentialAksManagementGroupName -ParentObject $landingZonesParentGroup | Out-Null
+
+Write-Host ($writeEmptyLine + "# Landing Zones management groups created" + $writeSeperatorSpaces + $currentTime) -foregroundcolor $foregroundColor2 $writeEmptyLine
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Move subscriptions under the tenant root group to the correct management groups, if they exist
+## Move subscriptions from the tenant root group or previous group scope to the appropriate management groups if they are present
 
 # Move Management subscription, if it exists
-If(!! $subNameManagement)
+If($subNameManagement)
 {
-    New-AzManagementGroupSubscription -GroupId $managementManagementGroupGuid -SubscriptionId $subNameManagement.SubscriptionId
+    New-AzManagementGroupSubscription -GroupId $managementManagementGroupGuid -SubscriptionId $subNameManagement.SubscriptionId | Out-Null
 }
 
 # Move Connectivity subscription, if it exists
-If(!! $subNameConnectivity)
+If($subNameConnectivity)
 {
-    New-AzManagementGroupSubscription -GroupId $connectivityManagementGroupGuid -SubscriptionId $subNameConnectivity.SubscriptionId
+    New-AzManagementGroupSubscription -GroupId $connectivityManagementGroupGuid -SubscriptionId $subNameConnectivity.SubscriptionId | Out-Null
 }
 
 # Move Identity subscription, if it exists
-If(!! $subNameIdentity)
+If($subNameIdentity)
 {
-    New-AzManagementGroupSubscription -GroupId $identityManagementGroupGuid -SubscriptionId $subNameIdentity.SubscriptionId
+    New-AzManagementGroupSubscription -GroupId $identityManagementGroupGuid -SubscriptionId $subNameIdentity.SubscriptionId | Out-Null
 }
 
 # Move Corp Production subscription, if it exists
-If(!! $subNameCorpPrd)
+If($subNameCorpPrd)
 {
-    New-AzManagementGroupSubscription -GroupId $corpManagementGroupGuid  -SubscriptionId $subNameCorpPrd.SubscriptionId
+    New-AzManagementGroupSubscription -GroupId $corpManagementGroupGuid  -SubscriptionId $subNameCorpPrd.SubscriptionId | Out-Null
 }
 
 # Move Corp Development subscription, if it exists
-If(!! $subNameCorpDev)
+If($subNameCorpDev)
 {
-    New-AzManagementGroupSubscription -GroupId $corpManagementGroupGuid  -SubscriptionId $subNameCorpDev.SubscriptionId
+    New-AzManagementGroupSubscription -GroupId $corpManagementGroupGuid  -SubscriptionId $subNameCorpDev.SubscriptionId | Out-Null
 }
 
 # Move Online Production subscription, if it exists
-If(!! $subNameOnlinePrd)
+If($subNameOnlinePrd)
 {
-    New-AzManagementGroupSubscription -GroupId $onlineManagementGroupGuid -SubscriptionId $subNameOnlinePrd.SubscriptionId
+    New-AzManagementGroupSubscription -GroupId $onlineManagementGroupGuid -SubscriptionId $subNameOnlinePrd.SubscriptionId | Out-Null
 }
 
 # Move Online Development subscription, if it exists
-If(!! $subNameOnlineDev )
+If($subNameOnlineDev )
 {
-    New-AzManagementGroupSubscription -GroupId $onlineManagementGroupGuid -SubscriptionId $subNameOnlineDev.SubscriptionId
+    New-AzManagementGroupSubscription -GroupId $onlineManagementGroupGuid -SubscriptionId $subNameOnlineDev.SubscriptionId | Out-Null
+}
+
+# Move Arc Infra Production subscription, if it exists
+If($subNameArcInfraPrd)
+{
+    New-AzManagementGroupSubscription -GroupID $arcInfraManagementGroupGuid -SubscriptionId $subNameArcInfraPrd.SubscriptionId | Out-Null
+}
+
+# Move Arc Infra Development subscription, if it exists
+If($subNameArcInfraDev)
+{
+    New-AzManagementGroupSubscription -GroupID $arcInfraManagementGroupGuid -SubscriptionId $subNameArcInfraDev.SubscriptionId | Out-Null
+}
+
+# Move Arc K8s Production subscription, if it exists
+If($subNameArcK8sPrd)
+{
+    New-AzManagementGroupSubscription -GroupID $arcK8sManagementGroupGuid -SubscriptionId $subNameArcK8sPrd.SubscriptionId | Out-Null
+}
+
+# Move Arc K8s Development subscription, if it exists
+If($subNameArcK8sDev)
+{
+    New-AzManagementGroupSubscription -GroupID $arcK8sManagementGroupGuid -SubscriptionId $subNameArcK8sDev.SubscriptionId | Out-Null
+}
+
+# Move Arc Data Production subscription, if it exists
+If($subNameArcDataPrd)
+{
+    New-AzManagementGroupSubscription -GroupID $arcDataManagementGroupGuid -SubscriptionId $subNameArcDataPrd.SubscriptionId | Out-Null
+}
+
+# Move Arc Data Development subscription, if it exists
+If($subNameArcDataDev)
+{
+    New-AzManagementGroupSubscription -GroupID $arcDataManagementGroupGuid -SubscriptionId $subNameArcDataDev.SubscriptionId | Out-Null
+}
+
+# Move AVD Production subscription, if it exists
+If($subNameAvdPrd)
+{
+    New-AzManagementGroupSubscription -GroupID $avdManagementGroupGuid -SubscriptionId $subNameAvdPrd.SubscriptionId | Out-Null
+}
+
+# Move AVD Development subscription, if it exists
+If($subNameAvdDev)
+{
+    New-AzManagementGroupSubscription -GroupID $avdManagementGroupGuid -SubscriptionId $subNameAvdDev.SubscriptionId | Out-Null
+}
+
+# Move AKS Production subscription, if it exists
+If($subNameAksPrd)
+{
+    New-AzManagementGroupSubscription -GroupID $aksManagementGroupGuid -SubscriptionId $subNameAksPrd.SubscriptionId | Out-Null
+}
+
+# Move AKS Development subscription, if it exists
+If($subNameAksDev)
+{
+    New-AzManagementGroupSubscription -GroupID $aksManagementGroupGuid -SubscriptionId $subNameAksDev.SubscriptionId | Out-Null
 }
 
 # Move SAP Production subscription, if it exists
-If(!! $subNameSapPrd)
+If($subNameSapPrd)
 {
-    New-AzManagementGroupSubscription -GroupID $sapManagementGroupGuid -SubscriptionId $subNameSapPrd.SubscriptionId
+    New-AzManagementGroupSubscription -GroupID $sapManagementGroupGuid -SubscriptionId $subNameSapPrd.SubscriptionId | Out-Null
 }
 
 # Move SAP Development subscription, if it exists
-If(!! $subNameSapDev)
+If($subNameSapDev)
 {
-    New-AzManagementGroupSubscription -GroupID $sapManagementGroupGuid -SubscriptionId $subNameSapDev.SubscriptionId
+    New-AzManagementGroupSubscription -GroupID $sapManagementGroupGuid -SubscriptionId $subNameSapDev.SubscriptionId | Out-Null
 }
 
 # Move Test subscription, if it exists
-If(!! $subNameTest)
+If($subNameTest)
 {
-    New-AzManagementGroupSubscription -GroupId $sandboxesManagementGroupGuid  -SubscriptionId $subNameTest.SubscriptionId
+    New-AzManagementGroupSubscription -GroupId $sandboxesManagementGroupGuid  -SubscriptionId $subNameTest.SubscriptionId | Out-Null
+}
+
+# Move Confidential Corp Production subscription, if it exists
+If($subNameConfidentialCorpPrd)
+{
+    New-AzManagementGroupSubscription -GroupId $confidentialCorpManagementGroupGuid  -SubscriptionId $subNameConfidentialCorpPrd.SubscriptionId | Out-Null
+}
+
+# Move Confidential Corp Development subscription, if it exists
+If($subNameConfidentialCorpDev)
+{
+    New-AzManagementGroupSubscription -GroupId $confidentialCorpManagementGroupGuid  -SubscriptionId $subNameConfidentialCorpDev.SubscriptionId | Out-Null
+}
+
+# Move Confidential Online Production subscription, if it exists
+If($subNameConfidentialOnlinePrd)
+{
+    New-AzManagementGroupSubscription -GroupId $confidentialOnlineManagementGroupGuid -SubscriptionId $subNameConfidentialOnlinePrd.SubscriptionId | Out-Null
+}
+
+# Move Confidential Online Development subscription, if it exists
+If($subNameConfidentialOnlineDev )
+{
+    New-AzManagementGroupSubscription -GroupId $confidentialOnlineManagementGroupGuid -SubscriptionId $subNameConfidentialOnlineDev.SubscriptionId | Out-Null
+}
+
+# Move Confidential AKS Production subscription, if it exists
+If($subNameConfidentialAksPrd)
+{
+    New-AzManagementGroupSubscription -GroupID $confidentialAksManagementGroupGuid -SubscriptionId $subNameConfidentialAksPrd.SubscriptionId | Out-Null
+}
+
+# Move Confidential AKS Development subscription, if it exists
+If($subNameConfidentialAksDev)
+{
+    New-AzManagementGroupSubscription -GroupID $confidentialAksManagementGroupGuid -SubscriptionId $subNameConfidentialAksDev.SubscriptionId | Out-Null
 }
 
 Write-Host ($writeEmptyLine + "# Subscriptions moved to management groups" + $writeSeperatorSpaces + $currentTime)`
