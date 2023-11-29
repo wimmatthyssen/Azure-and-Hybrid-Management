@@ -74,7 +74,7 @@ $managementManagementGroupName, $managementManagementGroupGuid = GenerateManagem
 $connectivityManagementGroupName, $connectivityManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-connectivity"
 $identityManagementGroupName, $identityManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-identity"
 
-#Landing zones management groups
+# Landing zones management groups
 $corpManagementGroupName, $corpManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-corp"
 $onlineManagementGroupName, $onlineManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-online"
 $arcInfraManagementGroupName, $arcInfraManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-arc-infra"
@@ -84,7 +84,7 @@ $avdManagementGroupName, $avdManagementGroupGuid = GenerateManagementGroup -pref
 $aksManagementGroupName, $aksManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-aks"
 $sapManagementGroupName, $sapManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-sap"
 
-#Confidential landing zones management groups
+# Confidential landing zones management groups
 $confidentialCorpManagementGroupName, $confidentialCorpManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-confidential-corp"
 $confidentialOnlineManagementGroupName, $confidentialOnlineManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-confidential-online"
 $confidentialAksManagementGroupName, $confidentialAksManagementGroupGuid  = GenerateManagementGroup -prefix $companyShortName -suffix "-confidential-aks"
