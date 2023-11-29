@@ -12,15 +12,16 @@ Create Company management group.
 Create Top management groups.
 Create Platform management groups.
 Create Landing Zones management groups.
+Create Confidential Landing Zones management groups.
 Move subscriptions from the tenant root group or previous group scope to the appropriate management groups if they are present.
 
 .NOTES
 
 Filename:       Create-Azure-Management-Groups-Tree-Hierarchy.ps1
 Created:        31/07/2020
-Last modified:  27/11/2023
+Last modified:  29/11/2023
 Author:         Wim Matthyssen
-Version:        2.0
+Version:        2.5
 PowerShell:     Azure PowerShell and Azure Cloud Shell
 Requires:       PowerShell Az (v10.4.1)
 Action:         Change variables were needed to fit your needs. 
@@ -35,7 +36,7 @@ Disclaimer:     This script is provided "as is" with no warranties.
 https://wmatthyssen.com/2022/04/04/azure-powershell-script-create-a-management-group-tree-hierarchy/
 #>
 
-## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Functions
 
@@ -51,7 +52,7 @@ function GenerateManagementGroup {
     return $groupName, $groupGuid
 }
 
-# ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Variables
 
@@ -64,6 +65,7 @@ $companyManagementGroupName, $companyManagementGroupGuid = GenerateManagementGro
 # Top management groups
 $platformManagementGroupName, $platformManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-platform"
 $landingZonesManagementGroupName, $landingZonesManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-landingzones"
+$confidentialLandingZonesManagementGroupName, $confidentialLandingZonesManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-confidential-landingzones"
 $sandboxesManagementGroupName, $sandboxesManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-sandboxes"
 $decommissionedManagementGroupName, $decommissionedManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-decommissioned"
 
@@ -72,7 +74,7 @@ $managementManagementGroupName, $managementManagementGroupGuid = GenerateManagem
 $connectivityManagementGroupName, $connectivityManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-connectivity"
 $identityManagementGroupName, $identityManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-identity"
 
-#Landing Zones management groups
+#Landing zones management groups
 $corpManagementGroupName, $corpManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-corp"
 $onlineManagementGroupName, $onlineManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-online"
 $arcInfraManagementGroupName, $arcInfraManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-arc-infra"
@@ -81,6 +83,8 @@ $arcDataManagementGroupName, $arcDataManagementGroupGuid = GenerateManagementGro
 $avdManagementGroupName, $avdManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-avd"
 $aksManagementGroupName, $aksManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-aks"
 $sapManagementGroupName, $sapManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-sap"
+
+#Confidential landing zones management groups
 $confidentialCorpManagementGroupName, $confidentialCorpManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-confidential-corp"
 $confidentialOnlineManagementGroupName, $confidentialOnlineManagementGroupGuid = GenerateManagementGroup -prefix $companyShortName -suffix "-confidential-online"
 $confidentialAksManagementGroupName, $confidentialAksManagementGroupGuid  = GenerateManagementGroup -prefix $companyShortName -suffix "-confidential-aks"
@@ -120,7 +124,7 @@ $foregroundColor2 = "Yellow"
 $writeEmptyLine = "`n"
 $writeSeperatorSpaces = " - "
 
-## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Remove the breaking change warning messages
 
@@ -128,14 +132,14 @@ Set-Item -Path Env:\SuppressAzurePowerShellBreakingChangeWarnings -Value $true |
 Update-AzConfig -DisplayBreakingChangeWarning $false | Out-Null
 $warningPreference = "SilentlyContinue"
 
-## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Write script started
 
-Write-Host ($writeEmptyLine + "# Script started. If there are no errors, it may take up to 7 minutes to finish, depending on the volume of resources" + $writeSeperatorSpaces + $currentTime)`
+Write-Host ($writeEmptyLine + "# Script started. If there are no errors, it may take up to 8 minutes to finish, depending on the volume of resources" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor1 $writeEmptyLine 
 
-## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Create Company management group
 $companyParentGroup = New-AzManagementGroup -GroupName $companyManagementGroupGuid -DisplayName $companyManagementGroupName
@@ -143,7 +147,7 @@ $companyParentGroup = New-AzManagementGroup -GroupName $companyManagementGroupGu
 Write-Host ($writeEmptyLine + "# Company management group $companyManagementGroupName created" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
 
-## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Create Top management groups
 
@@ -151,7 +155,10 @@ Write-Host ($writeEmptyLine + "# Company management group $companyManagementGrou
 $platformParentGroup = New-AzManagementGroup -GroupName $platformManagementGroupGuid -DisplayName $platformManagementGroupName -ParentObject $companyParentGroup
 
 # Create Landing Zones management group
-$landingZonesParentGroup = New-AzManagementGroup -GroupName $landingZonesManagementGroupGuid -DisplayName $landingZonesManagementGroupName -ParentObject $companyParentGroup 
+$landingZonesParentGroup = New-AzManagementGroup -GroupName $landingZonesManagementGroupGuid -DisplayName $landingZonesManagementGroupName -ParentObject $companyParentGroup
+
+# Create Confidential Landing Zones management group
+$confidentialLandingZonesParentGroup = New-AzManagementGroup -GroupName $confidentialLandingZonesManagementGroupGuid -DisplayName $confidentialLandingZonesManagementGroupName -ParentObject $companyParentGroup 
 
 # Create Sandbox management group
 New-AzManagementGroup -GroupName $sandboxesManagementGroupGuid -DisplayName $sandboxesManagementGroupName -ParentObject $companyParentGroup | Out-Null
@@ -159,10 +166,10 @@ New-AzManagementGroup -GroupName $sandboxesManagementGroupGuid -DisplayName $san
 # Create Decomission management group
 New-AzManagementGroup -GroupName $decommissionedManagementGroupGuid -DisplayName $decommissionedManagementGroupName -ParentObject $companyParentGroup | Out-Null
 
-Write-Host ($writeEmptyLine + "# Top management groups $platformManagementGroupName, $landingZonesManagementGroupName, $sandboxesManagementGroupName, and `
+Write-Host ($writeEmptyLine + "# Top management groups $platformManagementGroupName, $landingZonesManagementGroupName, $confidentialLandingZonesManagementGroupName, $sandboxesManagementGroupName, and `
 $decommissionedManagementGroupName created" + $writeSeperatorSpaces + $currentTime) -foregroundcolor $foregroundColor2 $writeEmptyLine
 
-## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Create Platform management groups
 
@@ -175,10 +182,10 @@ New-AzManagementGroup -GroupName $connectivityManagementGroupGuid -DisplayName $
 # Create Identity management group
 New-AzManagementGroup -GroupName $identityManagementGroupGuid -DisplayName $identityManagementGroupName -ParentObject $platformParentGroup | Out-Null
 
-Write-Host ($writeEmptyLine + "# Platform management groups $managementManagementGroupName, $connectivityManagementGroupName and `
-$identityManagementGroupName created" + $writeSeperatorSpaces + $currentTime) -foregroundcolor $foregroundColor2 $writeEmptyLine
+Write-Host ($writeEmptyLine + "# Platform management groups $managementManagementGroupName, $connectivityManagementGroupName and $identityManagementGroupName created" + $writeSeperatorSpaces + $currentTime)`
+-foregroundcolor $foregroundColor2 $writeEmptyLine
 
-## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Create Landing Zones management groups
 
@@ -206,18 +213,24 @@ New-AzManagementGroup -GroupName $aksManagementGroupGuid -DisplayName $aksManage
 # Create Sap management group
 New-AzManagementGroup -GroupName $sapManagementGroupGuid -DisplayName $sapManagementGroupName -ParentObject $landingZonesParentGroup | Out-Null
 
-# Create Confidential Corp management group
-New-AzManagementGroup -GroupName $confidentialCorpManagementGroupGuid -DisplayName $confidentialCorpManagementGroupName -ParentObject $landingZonesParentGroup | Out-Null
-
-# Create Confidentials Online management group
-New-AzManagementGroup -GroupName $confidentialOnlineManagementGroupGuid -DisplayName $confidentialOnlineManagementGroupName -ParentObject $landingZonesParentGroup | Out-Null
-
-# Create Confidentials Aks management group
-New-AzManagementGroup -GroupName $confidentialAksManagementGroupGuid -DisplayName $confidentialAksManagementGroupName -ParentObject $landingZonesParentGroup | Out-Null
-
 Write-Host ($writeEmptyLine + "# Landing Zones management groups created" + $writeSeperatorSpaces + $currentTime) -foregroundcolor $foregroundColor2 $writeEmptyLine
 
-## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Create Confidential Landing Zones management groups
+
+# Create Confidential Corp management group
+New-AzManagementGroup -GroupName $confidentialCorpManagementGroupGuid -DisplayName $confidentialCorpManagementGroupName -ParentObject $confidentialLandingZonesParentGroup | Out-Null
+
+# Create Confidentials Online management group
+New-AzManagementGroup -GroupName $confidentialOnlineManagementGroupGuid -DisplayName $confidentialOnlineManagementGroupName -ParentObject $confidentialLandingZonesParentGroup | Out-Null
+
+# Create Confidentials Aks management group
+New-AzManagementGroup -GroupName $confidentialAksManagementGroupGuid -DisplayName $confidentialAksManagementGroupName -ParentObject $confidentialLandingZonesParentGroup | Out-Null
+
+Write-Host ($writeEmptyLine + "# Confidential Landing Zones management groups created" + $writeSeperatorSpaces + $currentTime) -foregroundcolor $foregroundColor2 $writeEmptyLine
+
+## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Move subscriptions from the tenant root group or previous group scope to the appropriate management groups if they are present
 
@@ -380,11 +393,11 @@ If($subNameConfidentialAksDev)
 Write-Host ($writeEmptyLine + "# Subscriptions moved to management groups" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor2 $writeEmptyLine
 
-## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Write script completed
 
 Write-Host ($writeEmptyLine + "# Script completed" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor1 $writeEmptyLine 
 
-## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
