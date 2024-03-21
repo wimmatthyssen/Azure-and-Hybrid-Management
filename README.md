@@ -38,6 +38,6 @@ Currently this repository holds the following scritps:
    More information about this script used to onboard a specific Azure subscription in Microsoft Defender for Cloud can be found on my blog: https://wmatthyssen.com/2023/02/13/onboard-an-azure-subscription-in-microsoft-defender-for-cloud-using-an-azure-powershell-script/
    
   - **Get-all-Azure-classic-subscription-administrators.ps1**
-
-   More information about this script used to find all active “Azure classic subscription administrators” across any of your Azure Subscriptions can be found on my blog: https://wmatthyssen.com/2024/03/21/list-azure-classic-subscription-administrators-via-the-azure-portal-or-via-an-azure-powershell-script/
+    
+    More information about this script used to find all active “Azure classic subscription administrators” across any of your Azure Subscriptions can be found on my blog: https://wmatthyssen.com/2024/03/21/list-azure-classic-subscription-administrators-via-the-azure-portal-or-via-an-azure-powershell-script/
    
