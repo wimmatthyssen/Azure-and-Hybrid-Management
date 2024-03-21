@@ -7,7 +7,6 @@ A script used to find all Azure classic subscription administrators from all Azu
 .DESCRIPTION
 
 A script used to find all Azure classic subscription administrators from all Azure Subscriptions in an Azure tenant.
-t.
 
 The script will do all of the following:
 
