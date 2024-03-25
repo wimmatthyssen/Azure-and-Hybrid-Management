@@ -33,9 +33,13 @@ Currently this repository holds the following scritps:
 
    More information about this script used to create an Azure Files share in a specific subscription can be found on my blog: https://wmatthyssen.com/2023/02/02/create-an-azure-files-share-in-a-specified-subscription-using-an-azure-powershell-script/
 
- - **Onboard-a-subscription-in-Microsoft-Defender-for-CLoud.ps1**
+ - **Onboard-a-subscription-in-Microsoft-Defender-for-Cloud.ps1**
 
    More information about this script used to onboard a specific Azure subscription in Microsoft Defender for Cloud can be found on my blog: https://wmatthyssen.com/2023/02/13/onboard-an-azure-subscription-in-microsoft-defender-for-cloud-using-an-azure-powershell-script/
+
+- **Onboard-a-subscription-in-Microsoft-Defender-for-CLoud.ps1**
+
+   More information about this script used to create an Azure Automation account with an enabled system-assigned managed identity can be found on my blog: https://wmatthyssen.com/2024/02/22/create-an-azure-automation-account-with-azure-powershell/
    
   - **Get-all-Azure-classic-subscription-administrators.ps1**
     
