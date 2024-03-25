@@ -44,7 +44,7 @@ Set-AzContext -tenantID "xxxxxxxx-xxxx-xxxx-xxxxxxxxxxxx" (if not using the defa
 
 .LINK
 
-https://wmatthyssen.com/2022/08/01/azure-powershell-script-create-a-log-analytics-workspace-in-your-management-subscription/
+https://wmatthyssen.com/2024/02/22/create-an-azure-automation-account-with-azure-powershell/
 #>
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
