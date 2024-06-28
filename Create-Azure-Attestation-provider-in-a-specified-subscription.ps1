@@ -20,7 +20,7 @@ Register the required Azure resource provider (Microsoft.Attestation) in the cur
 Store the specified set of tags in a hash table.
 Extract spoke name from Attestion provider name and store in a variable ($spoke) for subsequent use.
 Create a resource group management if one does not already exist. Also, apply the necessary tags to this resource group.
-Create the Attestation provider if it does not exist.
+Create the Azure Attestation provider if it does not exist.
 Set specified tags on the Attestation provider.
 Set the log settings for the Attestation provider if they don't exist.
 Lock the management resource group with a CanNotDelete lock.
@@ -215,7 +215,7 @@ Write-Host ($writeEmptyLine + "# Resource group $rgNameManagement available with
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Create the Attestation provider if it does not exist
+## Create the Azure Attestation provider if it does not exist
 
 try {
     Get-AzAttestationProvider -Name $attestationProviderName -ResourceGroupName $rgNameManagement -ErrorAction Stop | Out-Null 
