@@ -44,4 +44,8 @@ Currently this repository holds the following scritps:
 - **Get-all-Azure-classic-subscription-administrators.ps1**
     
     More information about this script used to find all active “Azure classic subscription administrators” across any of your Azure Subscriptions can be found on my blog: https://wmatthyssen.com/2024/03/21/list-azure-classic-subscription-administrators-via-the-azure-portal-or-via-an-azure-powershell-script/
+
+- **Create-Azure-Attestation-provider-in-a-specified-subscription.ps1**
+    
+    More information about this script used to automate the deployment of an Azure Attestation provider in a specified Azure subscription can be found on my blog: https://wmatthyssen.com/2024/05/15/create-a-microsoft-azure-attestation-provider-with-azure-powershell/
    
