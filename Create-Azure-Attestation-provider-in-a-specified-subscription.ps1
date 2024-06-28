@@ -22,7 +22,7 @@ Extract spoke name from Attestion provider name and store in a variable ($spoke)
 Create a resource group management if one does not already exist. Also, apply the necessary tags to this resource group.
 Create the Azure Attestation provider if it does not exist.
 Set specified tags on the Azure Attestation provider.
-Set the log settings for the Attestation provider if they don't exist.
+Set the log settings for the Azure Attestation provider if they don't exist.
 Lock the management resource group with a CanNotDelete lock.
 
 .NOTES
@@ -237,7 +237,7 @@ Write-Host ($writeEmptyLine + "# Tags Attestation provider $attestationProviderN
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Set the log settings for the Attestation provider if they don't exist
+## Set the log settings for the Azure Attestation provider if they don't exist
 
 # Wait 15 seconds to let the Attestion provided be created if necessary
 Start-Sleep -Duration (New-TimeSpan -Seconds 15)
