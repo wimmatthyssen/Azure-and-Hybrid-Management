@@ -21,7 +21,7 @@ Store the specified set of tags in a hash table.
 Extract spoke name from Attestion provider name and store in a variable ($spoke) for subsequent use.
 Create a resource group management if one does not already exist. Also, apply the necessary tags to this resource group.
 Create the Azure Attestation provider if it does not exist.
-Set specified tags on the Attestation provider.
+Set specified tags on the Azure Attestation provider.
 Set the log settings for the Attestation provider if they don't exist.
 Lock the management resource group with a CanNotDelete lock.
 
@@ -228,7 +228,7 @@ Write-Host ($writeEmptyLine + "# Attestation provider $attestationProviderName c
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Set specified tags on the Attestation provider
+## Set specified tags on the Azure Attestation provider
 
 Update-AzAttestationProvider -Name $attestationProviderName -ResourceGroupName $rgNameManagement -Tag $tags | Out-Null
 
