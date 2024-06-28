@@ -48,7 +48,7 @@ Set-AzContext -tenantID "xxxxxxxx-xxxx-xxxx-xxxxxxxxxxxx" (if not using the defa
 
 .LINK
 
-https://wmatthyssen.com/2024/02/22/create-an-azure-automation-account-with-azure-powershell/
+https://wmatthyssen.com/2024/05/15/create-a-microsoft-azure-attestation-provider-with-azure-powershell/
 #>
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
