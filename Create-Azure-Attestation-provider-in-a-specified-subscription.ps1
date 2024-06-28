@@ -1,11 +1,11 @@
 <#
 .SYNOPSIS
 
-A script used to create an Azure Attestion provider in a specified Azure subscription.
+A script used to create a Microsoft Azure Attestion provider in a specified Azure subscription.
 
 .DESCRIPTION
 
-A script used to create an Azure Attestion provider in a specified Azure subscription.
+A script used to create a Microsoft Azure Attestion provider in a specified Azure subscription.
 The script will do all of the following:
 
 Remove the breaking change warning messages.
