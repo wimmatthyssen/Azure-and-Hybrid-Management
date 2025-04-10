@@ -84,7 +84,7 @@ try {
     } else {
         # OS is not Windows Server 2025, continue with the script
         Write-Host ($writeEmptyLine + "# OS is not Windows Server 2025. Continuing script execution" + $writeSeperatorSpaces + $global:currenttime)`
-        -foregroundcolor $foregroundColor1 $writeEmptyLine
+        -foregroundcolor $foregroundColor2 $writeEmptyLine
         $isWindowsServer2025 = $false
     }
 } catch {
