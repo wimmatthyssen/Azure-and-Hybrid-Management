@@ -33,7 +33,7 @@ Disclaimer:     This script is provided "As Is" with no warranties.
 
 .LINK
 
-
+https://wmatthyssen.com/2025/04/10/how-to-install-openssh-on-a-windows-server-2019-2022-2025-using-a-powershell-script/
 #>
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
