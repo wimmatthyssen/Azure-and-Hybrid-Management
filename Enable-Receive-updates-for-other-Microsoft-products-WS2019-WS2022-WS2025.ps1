@@ -11,6 +11,7 @@ This script will do all of the following:
 Check if PowerShell is running as Administrator, otherwise exit the script.
 Enable "Receive updates for other Microsoft products". 
 Check if "Receive updates for other Microsoft products" is enabled.
+Check for new updates
 
 .NOTES
 
@@ -91,13 +92,32 @@ if ($msUpdateService) {
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+## Check for new updates
+
+Write-Host ($writeEmptyLine + "# Checking for new updates..." + $writeSeperatorSpaces + $currentTime)` -foregroundcolor $foregroundColor2 $writeEmptyLine
+
+try {
+    $updateSession = New-Object -ComObject "Microsoft.Update.Session"
+    $updateSearcher = $updateSession.CreateUpdateSearcher()
+    $searchResult = $updateSearcher.Search("IsInstalled=0")
+
+    if ($searchResult.Updates.Count -gt 0) {
+        Write-Host ($writeEmptyLine + "# New updates are available:" + $writeSeperatorSpaces + $currentTime)` -foregroundcolor $foregroundColor2 $writeEmptyLine
+        foreach ($update in $searchResult.Updates) {
+            Write-Host ("- " + $update.Title) -foregroundcolor $foregroundColor1
+        }
+    } else {
+        Write-Host ($writeEmptyLine + "# No new updates are available." + $writeSeperatorSpaces + $currentTime)` -foregroundcolor $foregroundColor2 $writeEmptyLine
+    }
+} catch {
+    Write-Host ($writeEmptyLine + "# An error occurred while checking for updates: $_" + $writeSeperatorSpaces + $currentTime)` -foregroundcolor $foregroundColor3 $writeEmptyLine
+}
+
+## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 ## Write script completed
 
 Write-Host ($writeEmptyLine + "# Script completed" + $writeSeperatorSpaces + $currentTime)`
 -foregroundcolor $foregroundColor1 $writeEmptyLine 
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-
-
