@@ -39,6 +39,9 @@ https://wmatthyssen.com/2025/04/07/powershell-script-bginfo-deployment-script-fo
 
 ## Variables
 
+$registryPath = "HKLM:\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings"
+$registryValueName = "AllowMUUpdateService"
+
 $global:currenttime= Set-PSBreakpoint -Variable currenttime -Mode Read -Action {$global:currenttime= Get-Date -UFormat "%A %m/%d/%Y %R"}
 $foregroundColor1 = "Green"
 $foregroundColor2 = "Yellow"
@@ -68,9 +71,6 @@ Write-Host ($writeEmptyLine + "# Script started. Without errors, it can take up 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Enable "Receive updates for other Microsoft products" 
-
-$registryPath = "HKLM:\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings"
-$registryValueName = "AllowMUUpdateService"
 
 # Check if the registry path exists
 if (Test-Path $registryPath) {
