@@ -11,7 +11,7 @@ This script will do all of the following:
 Check if PowerShell is running as Administrator, otherwise exit the script.
 Enable "Receive updates for other Microsoft products". 
 Register the Microsoft Update service.
-Check for new updates
+Check for new updates.
 
 .NOTES
 
