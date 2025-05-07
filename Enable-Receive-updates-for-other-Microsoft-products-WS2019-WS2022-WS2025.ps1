@@ -32,7 +32,7 @@ Disclaimer:    This script is provided "As Is" without any warranties.
 
 .LINK
 
-https://wmatthyssen.com/2025/04/07/powershell-script-bginfo-deployment-script-for-windows-server-2025/ 
+https://wmatthyssen.com/2025/05/07/azure-arc-keep-your-azure-connected-machine-agent-up-to-date-on-a-windows-server/
 #>
 
 ## ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
