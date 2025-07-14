@@ -51,9 +51,9 @@ Currently this repository holds the following scritps:
 
 - **Register-AUM-resource-providers-in-a-specified-subscription.ps1**
     
-    More information about this script used to automate the registration of all required Azure Update Manager resource providers in a specific subscription can be found on my blog: https://wmatthyssen.com/2024/05/15/create-a-microsoft-azure-attestation-provider-with-azure-powershell/
+    More information about this script used to automate the registration of all required Azure Update Manager resource providers in a specific subscription can be found on my blog: https://wmatthyssen.com/2025/07/14/azure-update-manager-register-all-required-resource-providers-with-a-powershell-script/
 
 - **Enable-Receive-Updates-for-Other-Microsoft-Products-WS2019-WS2022-WS2025.ps1**
     
-    More information about this script used to configure Azure Connected Machine Agent updates using a PowerShell script can be found on my blog: [https://wmatthyssen.com/2025/07/14/azure-update-manager-register-all-required-resource-providers-with-a-powershell-script/ 
+    More information about this script used to configure Azure Connected Machine Agent updates using a PowerShell script can be found on my blog: https://wmatthyssen.com/2025/07/14/azure-update-manager-register-all-required-resource-providers-with-a-powershell-script/ 
    
