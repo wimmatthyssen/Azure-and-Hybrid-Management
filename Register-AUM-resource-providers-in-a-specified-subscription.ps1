@@ -35,7 +35,7 @@ Set-AzContext -tenantID "xxxxxxxx-xxxx-xxxx-xxxxxxxxxxxx" (if not using the defa
 
 .LINK
 
-
+https://wmatthyssen.com/2025/07/14/azure-update-manager-register-all-required-resource-providers-with-a-powershell-script/
 #>
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
