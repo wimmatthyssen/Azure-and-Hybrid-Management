@@ -14,7 +14,7 @@ Write script completed.
 .NOTES
 Filename:       Create-Decommissioned-Management-group.ps1
 Created:        11/08/2025
-Last modified:  11/17/2025
+Last modified:  17/11/2025
 Author:         Wim Matthyssen
 Version:        1.1
 PowerShell:     Azure PowerShell and Azure Cloud Shell
@@ -165,3 +165,4 @@ Write-Host ($writeEmptyLine + "# Script completed" + $writeSeperatorSpaces + $cu
 
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
