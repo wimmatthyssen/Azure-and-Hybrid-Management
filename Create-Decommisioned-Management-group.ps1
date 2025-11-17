@@ -26,7 +26,9 @@ Disclaimer:     This script is provided "As Is" with no warranties.
 Connect-AzAccount
 Get-AzTenant (if not using the default tenant)
 Set-AzContext -tenantID "xxxxxxxx-xxxx-xxxx-xxxxxxxxxxxx" (if not using the default tenant)
-.\Create-Decommissioned-Management-group.ps1 -ManagementGroupName "mg-myh-decommissioned"
+.\Create-Decommissioned-Management-group.ps1 -ManagementGroupName <"your Management group name here"> 
+
+Example: .\Create-Decommissioned-Management-group.ps1 -ManagementGroupName "mg-myh-decommissioned"
 
 .LINK
 #>
@@ -160,5 +162,6 @@ try {
 ## Write script completed.
 
 Write-Host ($writeEmptyLine + "# Script completed" + $writeSeperatorSpaces + $currentTime) -foregroundcolor $foregroundColor1 $writeEmptyLine
+
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
