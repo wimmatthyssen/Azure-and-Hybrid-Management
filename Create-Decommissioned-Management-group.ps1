@@ -147,9 +147,9 @@ try {
 
         Write-Host ($writeEmptyLine + "# Management group '$managementGroupName' created successfully" + $writeSeperatorSpaces + $currentTime) -foregroundcolor $foregroundColor2 $writeEmptyLine
         Write-Host ($writeEmptyLine + "# New management group details:") -foregroundcolor $foregroundColor2 $writeEmptyLine
-        Write-Host $writeEmptySpaces "DisplayName: $($newGroup.DisplayName)"
-        Write-Host $writeEmptySpaces "Name:        $($newGroup.Name)"
-        Write-Host $writeEmptySpaces "Id:          $($newGroup.Id)" $writeEmptyLine
+        Write-Host $writeEmptySpaces "DisplayName: $($newGroup.DisplayName)" -foregroundcolor $foregroundColor2
+        Write-Host $writeEmptySpaces "Name:        $($newGroup.Name)" -foregroundcolor $foregroundColor2
+        Write-Host $writeEmptySpaces "Id:          $($newGroup.Id)" -foregroundcolor $foregroundColor2 $writeEmptyLine
     }
 
 } catch {
