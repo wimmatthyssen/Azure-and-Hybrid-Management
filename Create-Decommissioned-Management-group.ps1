@@ -31,6 +31,7 @@ Set-AzContext -tenantID "xxxxxxxx-xxxx-xxxx-xxxxxxxxxxxx" (if not using the defa
 Example: .\Create-Decommissioned-Management-group.ps1 -ManagementGroupName "mg-myh-decommissioned"
 
 .LINK
+https://wmatthyssen.com/2025/08/12/azure-governance-managing-decommissioned-azure-subscriptions-with-a-dedicated-management-group/
 #>
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -164,3 +165,4 @@ try {
 Write-Host ($writeEmptyLine + "# Script completed" + $writeSeperatorSpaces + $currentTime) -foregroundcolor $foregroundColor1 $writeEmptyLine
 
 ## ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
