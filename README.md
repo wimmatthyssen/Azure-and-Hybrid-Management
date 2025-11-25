@@ -9,6 +9,10 @@ Currently this repository holds the following scritps:
 
   More information about this script used to build a management groups tree structure can be found on my blog: https://wmatthyssen.com/2022/04/04/azure-powershell-script-create-a-management-group-tree-hierarchy/
 
+- **Create-Decommissioned-Management-group.ps1**
+
+  More information about this script used to create an Azure management group for decommissioning Azure subscriptions, placed under the company management group hierarchy can be found on my blog: https://wmatthyssen.com/2025/08/12/azure-governance-managing-decommissioned-azure-subscriptions-with-a-dedicated-management-group/
+
 - **Create-Azure-Monitor-Action-Group.ps1**
 
   More information about this script used to create an Azure Monitor action group can be found on my blog: https://wmatthyssen.com/2022/01/12/create-an-azure-monitor-action-group-with-azure-powershell/
